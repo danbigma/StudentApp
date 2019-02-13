@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <jsp:include page="header.jsp" />
 
 <div class="container">
@@ -8,9 +9,9 @@
 
 	<h3>Add new student</h3>
 		
-		<form action="StudentControllerServlet" method="GET">
+		<form action="studentController" method="GET">
 		
-			<input type="hidden" name="command" value="ADD" />
+			<input type="hidden" name="command" value="add" />
 			
 			<table class="thead-dark">
 				<tbody>
@@ -41,7 +42,7 @@
 		<div style="clear: both;"></div>
 		
 		<p>
-			<a href="StudentControllerServlet">Back to List</a>
+			<a href="studentController">Back to List</a>
 		</p>
 		</div>
 		<div class="col"></div>

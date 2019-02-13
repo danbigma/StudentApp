@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <jsp:include page="header.jsp" />
 
 <div class="container">
@@ -6,12 +7,15 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-md-8">
-            <!-- put new button: Add Student -->
+        
+        	<jsp:include page="databasecounter.jsp" />
 
-            <input type="button" class="btn btn-link" value="Add Student"
-                onclick="window.location.href='add-student-form.jsp'; return false;" />
+			<!-- put new button: Add Student -->
 
-            <table class="table">
+			<input type="button" class="btn btn-link" value="Add Student"
+				onclick="window.location.href='add-student-form.jsp';" />
+
+			<table class="table">
 
                 <thead class="thead-dark">
                     <tr>
@@ -25,14 +29,14 @@
                     <c:forEach var="tempStudent" items="${STUDENT_LIST}">
 
                         <!-- set up a link for each student -->
-                        <c:url var="tempLink" value="StudentControllerServlet">
-                            <c:param name="command" value="LOAD" />
+                        <c:url var="tempLink" value="studentController">
+                            <c:param name="command" value="load" />
                             <c:param name="studentId" value="${tempStudent.id}" />
                         </c:url>
 
                         <!--  set up a link to delete a student -->
-                        <c:url var="deleteLink" value="StudentControllerServlet">
-                            <c:param name="command" value="DELETE" />
+                        <c:url var="deleteLink" value="studentController">
+                            <c:param name="command" value="delete" />
                             <c:param name="studentId" value="${tempStudent.id}" />
                         </c:url>
 
@@ -42,7 +46,7 @@
                             <td>${tempStudent.email}</td>
                             <td><a href="${tempLink}">Update</a> | <a
                                 href="${deleteLink}"
-                                onclick="if (!(confirm('Are you sure you want to delete this student?'))) return false">
+                                onclick="if (!(confirm('Are you sure you want to delete this student?')))">
                                     Delete</a></td>
                         </tr>
 

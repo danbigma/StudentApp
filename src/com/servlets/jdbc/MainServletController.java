@@ -1,6 +1,8 @@
-package com.luv2code.web.jdbc;
+package com.servlets.jdbc;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,8 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 
-@WebServlet("/StudentControllerServlet")
-public class StudentControllerServlet extends HttpServlet {
+@WebServlet("/studentController")
+public class MainServletController extends HttpServlet {
+	
     private static final long serialVersionUID = 1L;
 
     private StudentDbUtil studentDbUtil;
@@ -38,40 +41,12 @@ public class StudentControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         try {
-            // read the "command" parameter
+        	
+        	databasecounter(request, response);
+        	
             String theCommand = request.getParameter("command");
             
-            // if the command is missing, then default to listing students
-            if (theCommand == null) {
-                theCommand = "LIST";
-            }
-            
-            // route to the appropriate method
-            switch (theCommand) {
-            
-            case "LIST":
-                listStudents(request, response);
-                break;
-                
-            case "ADD":
-                addStudent(request, response);
-                break;
-                
-            case "LOAD":
-                loadStudent(request, response);
-                break;
-                
-            case "UPDATE":
-                updateStudent(request, response);
-                break;
-            
-            case "DELETE":
-                deleteStudent(request, response);
-                break;
-                
-            default:
-                listStudents(request, response);
-            }
+            commands(request, response, theCommand);
                 
         }
         catch (Exception exc) {
@@ -79,6 +54,59 @@ public class StudentControllerServlet extends HttpServlet {
         }
         
     }
+
+	private void databasecounter(HttpServletRequest request, HttpServletResponse response) {
+		
+		RequestDispatcher dispatcher = null;
+		
+		try {
+			
+			BigDecimal counter = studentDbUtil.getNumAllRegistr();
+			
+			request.setAttribute("num", counter);
+			
+			dispatcher = request.getRequestDispatcher("databasecounter.jsp");
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void commands(HttpServletRequest request, HttpServletResponse response, String theCommand)
+			throws Exception {
+		
+		if (theCommand == null) {
+		    theCommand = "list";
+		}
+		
+		// route to the appropriate method
+		switch (theCommand) {
+		
+		    case "list":
+		        listStudents(request, response);
+		        break;
+		        
+		    case "add":
+		        addStudent(request, response);
+		        break;
+		        
+		    case "load":
+		        loadStudent(request, response);
+		        break;
+		        
+		    case "update":
+		        updateStudent(request, response);
+		        break;
+		    
+		    case "delete":
+		        deleteStudent(request, response);
+		        break;
+		        
+		    default:
+		        listStudents(request, response);
+		}
+	}
 
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response)
         throws Exception {

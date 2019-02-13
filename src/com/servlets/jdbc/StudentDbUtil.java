@@ -1,8 +1,10 @@
-package com.luv2code.web.jdbc;
+package com.servlets.jdbc;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -220,6 +222,38 @@ public class StudentDbUtil {
 			// clean up JDBC code
 			close(myConn, myStmt, null);
 		}	
+	}
+
+	public BigDecimal getNumAllRegistr() throws SQLException {
+		
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		BigDecimal num = null;
+		
+		try {
+			
+			myConn = dataSource.getConnection();
+			
+			String sql = "select count(*) as num from student";
+			
+			myStmt = myConn.createStatement();
+			
+			myRs = myStmt.executeQuery(sql);
+			
+			if (myRs.next()) {
+				
+				num = myRs.getBigDecimal("num");
+				
+			}
+			
+		} finally {
+			// close JDBC objects
+			close(myConn, myStmt, myRs);
+		}	
+		
+		return num;
 	}
 }
 

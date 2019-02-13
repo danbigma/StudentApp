@@ -1,4 +1,4 @@
-package com.luv2code.web.jdbc;
+package com.servlets.jdbc;
 
 public class Student {
 
