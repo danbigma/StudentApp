@@ -42,8 +42,6 @@ public class MainServletController extends HttpServlet {
 
         try {
         	
-        	databasecounter(request, response);
-        	
             String theCommand = request.getParameter("command");
             
             commands(request, response, theCommand);
@@ -178,12 +176,14 @@ public class MainServletController extends HttpServlet {
 
     private void listStudents(HttpServletRequest request, HttpServletResponse response) 
         throws Exception {
+    	
+    	databasecounter(request, response);
 
         // get students from db util
         List<Student> students = studentDbUtil.getStudents();
         
         // add students to the request
-        request.setAttribute("STUDENT_LIST", students);
+        request.setAttribute("studentList", students);
                 
         // send to JSP page (view)
         RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");

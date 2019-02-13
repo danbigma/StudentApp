@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="tempStudent" items="${STUDENT_LIST}">
+                    <c:forEach var="tempStudent" items="${studentList}">
 
                         <!-- set up a link for each student -->
                         <c:url var="tempLink" value="studentController">
