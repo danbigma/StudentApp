@@ -53,6 +53,7 @@ public class MainServletController extends HttpServlet {
         
     }
 
+	@SuppressWarnings("unused")
 	private void databasecounter(HttpServletRequest request, HttpServletResponse response) {
 		
 		RequestDispatcher dispatcher = null;

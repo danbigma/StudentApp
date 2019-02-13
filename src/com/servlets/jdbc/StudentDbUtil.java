@@ -93,9 +93,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 			
 			// create sql for insert
-			String sql = "insert into student "
-					   + "(first_name, last_name, email) "
-					   + "values (?, ?, ?)";
+			String sql = "insert into student (first_name, last_name, email) values (?, ?, ?) ";
 			
 			myStmt = myConn.prepareStatement(sql);
 			
@@ -172,9 +170,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 			
 			// create SQL update statement
-			String sql = "update student "
-						+ "set first_name=?, last_name=?, email=? "
-						+ "where id=?";
+			String sql = "update student set first_name = ?, last_name = ?, email = ? where id = ? ";
 			
 			// prepare statement
 			myStmt = myConn.prepareStatement(sql);
