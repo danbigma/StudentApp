@@ -1,4 +1,4 @@
-package com.servlets.jdbc;
+package com.studentapp.jdbc;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -14,6 +14,8 @@ import javax.sql.DataSource;
 public class StudentDbUtil {
 
 	private DataSource dataSource;
+	
+	public Querys querys = new Querys();
 
 	public StudentDbUtil(DataSource theDataSource) {
 		dataSource = theDataSource;
@@ -32,7 +34,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 			
 			// create sql statement
-			String sql = "select * from student order by last_name";
+			String sql = querys.getStudentsQuery();
 			
 			myStmt = myConn.createStatement();
 			
@@ -63,24 +65,24 @@ public class StudentDbUtil {
 		}		
 	}
 
-	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
+	private void close(Connection connection, Statement statement, ResultSet resultSet) {
 
 		try {
-			if (myRs != null) {
-				myRs.close();
+			if (resultSet != null) {
+				resultSet.close();
 			}
-			
-			if (myStmt != null) {
-				myStmt.close();
+
+			if (statement != null) {
+				statement.close();
 			}
-			
-			if (myConn != null) {
-				myConn.close();   // doesn't really close it ... just puts back in connection pool
+
+			if (connection != null) {
+				connection.close();
 			}
-		}
-		catch (Exception exc) {
+		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
+		
 	}
 
 	public void addStudent(Student theStudent) throws Exception {
@@ -93,7 +95,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 			
 			// create sql for insert
-			String sql = "insert into student (first_name, last_name, email) values (?, ?, ?) ";
+			String sql = querys.addStudentQuery();
 			
 			myStmt = myConn.prepareStatement(sql);
 			
@@ -128,7 +130,7 @@ public class StudentDbUtil {
 			myConn = dataSource.getConnection();
 			
 			// create sql to get selected student
-			String sql = "select * from student where id=?";
+			String sql = querys.getStudentQuery();
 			
 			// create prepared statement
 			myStmt = myConn.prepareStatement(sql);

@@ -1,4 +1,4 @@
-package com.servlets.jdbc;
+package com.studentapp.jdbc;
 
 public class Student {
 

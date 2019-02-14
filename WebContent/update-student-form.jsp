@@ -10,8 +10,8 @@
 
 			<form action="studentController" method="GET">
 
-				<input type="hidden" name="command" value="update" /> <input
-					type="hidden" name="studentId" value="${THE_STUDENT.id}" />
+				<input type="hidden" name="command" value="update" />
+				<input type="hidden" name="studentId" value="${THE_STUDENT.id}" />
 
 				<table class="thead-dark">
 					<tbody>
