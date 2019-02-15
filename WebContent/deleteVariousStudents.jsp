@@ -7,25 +7,18 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-md-8">
-        
-        	<jsp:include page="databasecounter.jsp" />
-
-			<!-- put new button: Add Student -->
-
-			<input type="button" class="btn btn-link" value="Add Student"
-				onclick="window.location.href='add-student-form.jsp';" />
-				
-			<input type="button" class="btn btn-link" value="Delete various"
-				onclick="window.location.href='/StudentApp/deletestudents';" />
 
 			<table class="table">
 
                 <thead class="thead-dark">
                     <tr>
+                        <th scope="col">
+                        	<input type="checkbox" name="students"/>
+                        </th>
                         <th scope="col">First Name</th>
                         <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -44,13 +37,12 @@
                         </c:url>
 
                         <tr>
+                            <td scope="col">
+                        		<input type="checkbox" name="student" value="${tempStudent.id}" />
+                        	</td>
                             <td>${tempStudent.firstName}</td>
                             <td>${tempStudent.lastName}</td>
                             <td>${tempStudent.email}</td>
-                            <td><a href="${tempLink}">Update</a> | <a
-                                href="${deleteLink}"
-                                onclick="if (!(confirm('Are you sure you want to delete this student?')))">
-                                    Delete</a></td>
                         </tr>
 
                     </c:forEach>
@@ -63,5 +55,40 @@
 
 </div>
 
+<script>
+
+	let checkboxAllCheckbox = document.getElementsByName("students");
+	checkboxAllCheckbox[0].onchange = selectAllCheckbox;
+	
+	function selectAllCheckbox() {
+		let inputsCheckbox = document.getElementsByName("student");
+		
+		for (var i=0; i<inputsCheckbox.length; i++) {
+			if (!checkboxAllCheckbox[0].checked) {
+				inputsCheckbox[i].checked = false;
+			} else {
+				inputsCheckbox[i].checked = true;
+			}
+		}
+	}
+ 	
+</script>
 
 <jsp:include page="footer.jsp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
