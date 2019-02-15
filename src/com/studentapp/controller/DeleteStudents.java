@@ -39,22 +39,60 @@ public class DeleteStudents extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		String command = request.getParameter("command");
+		
+		if (command==null) {
+			command = "list";
+		}
+		
+		switch (command) {
+			case "delete":
+				deleteStudents(request, response);
+				break;
+			case "list":
+				listStudents(request, response);
+				break;
+			default:
+				listStudents(request, response);
+				break;
+		}
+		
+	}
+	
+	private void deleteStudents(HttpServletRequest request, HttpServletResponse response) {
+		
+		String[] studentsId = request.getParameterValues("student");
+		
+		if (studentsId == null)  {
+			listStudents(request, response);
+		}
+		
+		try {
+			utilsDB.deleteStudents(studentsId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		listStudents(request, response);
+	}
+	
+	private void listStudents(HttpServletRequest request, HttpServletResponse response) {
+		
 		RequestDispatcher dispatcher = null;
 		
         List<Student> students = null;
         
 		try {
 			students = utilsDB.getStudents();
+			
+	        request.setAttribute("studentList", students);
+            
+	        dispatcher = request.getRequestDispatcher("deleteVariousStudents.jsp");
+	        dispatcher.forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        
-        request.setAttribute("studentList", students);
-                
-        dispatcher = request.getRequestDispatcher("deleteVariousStudents.jsp");
-        dispatcher.forward(request, response);
-		
-		
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

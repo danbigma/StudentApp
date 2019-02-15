@@ -253,6 +253,52 @@ public class StudentDbUtil {
 		
 		return num;
 	}
+
+	public void deleteStudents(String[] studentsId) throws SQLException {
+		
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		
+		StringBuilder sql = new StringBuilder();
+		
+		int i=0;
+		
+		try {
+			
+			// get connection to database
+			myConn = dataSource.getConnection();
+			
+			sql.append(" delete ");
+			sql.append(" from ");
+			sql.append(" student ");
+			sql.append(" where ");
+			sql.append(" id in ( ");
+			
+			for (int j = 0; j < studentsId.length; j++) {
+				sql.append(" ?, ");
+			}
+			
+			sql.deleteCharAt(sql.lastIndexOf(","));
+			sql.append(" ) ");
+			
+			// prepare statement
+			myStmt = myConn.prepareStatement(sql.toString());
+			
+			// set params
+			for (String id : studentsId) {
+				i++;
+				myStmt.setString(i, id);
+			}
+			
+			// execute sql statement
+			myStmt.execute();
+		}
+		finally {
+			// clean up JDBC code
+			close(myConn, myStmt, null);
+		}	
+		
+	}
 }
 
 

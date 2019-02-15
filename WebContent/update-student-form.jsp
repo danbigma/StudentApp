@@ -6,29 +6,29 @@
 	<div class="row">
 		<div class="col"></div>
 		<div class="col-md-8">
-			<h3>Update Student</h3>
-
-			<form action="studentController" method="GET">
-
+			<form action="studentController" method="post">
+			
 				<input type="hidden" name="command" value="update" />
 				<input type="hidden" name="studentId" value="${THE_STUDENT.id}" />
 
 				<table class="thead-dark">
+					<input type="button" class="btn btn-link" value="Back to List" onclick="window.location.href='studentController';" />
 					<tbody>
 						<tr>
-							<td><label>First name:</label></td>
-							<td><input class="form-control" type="text" name="firstName"
-								value="${THE_STUDENT.firstName}" /></td>
+							<div class="form-group">
+								<td><label for="firstName">First name</label></td>
+								<td><input class="form-control" type="text" name="firstName" value="${THE_STUDENT.firstName}" /></td>
+							</div>
 						</tr>
 
 						<tr>
-							<td><label>Last name:</label></td>
+							<td><label for="lastName">Last name:</label></td>
 							<td><input class="form-control" type="text" name="lastName"
 								value="${THE_STUDENT.lastName}" /></td>
 						</tr>
 
 						<tr>
-							<td><label>Email:</label></td>
+							<td><label for="email">Email:</label></td>
 							<td><input class="form-control" type="text" name="email"
 								value="${THE_STUDENT.email}" /></td>
 						</tr>
@@ -44,10 +44,6 @@
 			</form>
 
 			<div style="clear: both;"></div>
-
-			<p>
-				<a href="studentController">Back to List</a>
-			</p>
 		</div>
 		<div class="col"></div>
 	</div>
