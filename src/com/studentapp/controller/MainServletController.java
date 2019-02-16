@@ -41,38 +41,38 @@ public class MainServletController extends HttpServlet {
         }
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        try {
-        	
-            String theCommand = request.getParameter("command");
-            
-            commands(request, response, theCommand);
-                
-        }
-        catch (Exception exc) {
-            throw new ServletException(exc);
-        }
-        
-    }
+		try {
+
+			String theCommand = request.getParameter("command");
+
+			commands(request, response, theCommand);
+
+		} catch (Exception exc) {
+			throw new ServletException(exc);
+		}
+
+	}
 
 	@SuppressWarnings("unused")
 	private void databasecounter(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		RequestDispatcher dispatcher = null;
-		
+
 		try {
-			
+
 			BigDecimal counter = studentDbUtil.getNumAllRegistr();
-			
+
 			request.setAttribute("num", counter);
-			
+
 			dispatcher = request.getRequestDispatcher("databasecounter.jsp");
-		
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void commands(HttpServletRequest request, HttpServletResponse response, String theCommand)
@@ -171,9 +171,10 @@ public class MainServletController extends HttpServlet {
         // create a new student object
         Student theStudent = new Student(firstName, lastName, email);
         
-        // add the student to the database
-        studentDbUtil.addStudent(theStudent);
-                
+        if (firstName!=null&&lastName!=null&&email!=null) {
+        	// add the student to the database
+        	studentDbUtil.addStudent(theStudent);
+        }
         // send back to main page (the student list)
         listStudents(request, response);
     }

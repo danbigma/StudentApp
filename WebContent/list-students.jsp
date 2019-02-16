@@ -17,6 +17,9 @@
 				
 			<input type="button" class="btn btn-link" value="Delete various"
 				onclick="window.location.href='/StudentApp/deletestudents';" />
+				
+			<input type="button" class="btn btn-link" value="Client Information"
+				onclick="window.location.href='/StudentApp/clientInformation';" />
 
 			<table class="table">
 
