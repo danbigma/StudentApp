@@ -18,8 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @WebFilter(filterName = "logFilter", urlPatterns = { "/logFilter" })
 public class LogFilter implements Filter {
 	 
-    public LogFilter() {
-    }
+    public LogFilter() {}
  
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
