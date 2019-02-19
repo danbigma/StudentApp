@@ -1,4 +1,4 @@
-package com.studentapp.jdbc;
+package com.studentapp.entity;
 
 public class Student {
 

@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.studentapp.entity.Student;
+
 public class StudentDbUtil {
 
 	private DataSource dataSource;
