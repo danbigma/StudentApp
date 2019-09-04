@@ -17,7 +17,7 @@ public class StudentDbUtil {
 
 	private DataSource dataSource;
 	
-	public Querys querys = new Querys();
+	public Querys querys = null;
 
 	public StudentDbUtil(DataSource theDataSource) {
 		dataSource = theDataSource;
@@ -32,6 +32,9 @@ public class StudentDbUtil {
 		ResultSet myRs = null;
 		
 		try {
+			
+			querys = new Querys();
+			
 			// get a connection
 			myConn = dataSource.getConnection();
 			
@@ -93,6 +96,9 @@ public class StudentDbUtil {
 		PreparedStatement myStmt = null;
 		
 		try {
+			
+			querys = new Querys();
+			
 			// get db connection
 			myConn = dataSource.getConnection();
 			
@@ -125,6 +131,9 @@ public class StudentDbUtil {
 		int studentId;
 		
 		try {
+			
+			querys = new Querys();
+			
 			// convert student id to int
 			studentId = Integer.parseInt(theStudentId);
 			

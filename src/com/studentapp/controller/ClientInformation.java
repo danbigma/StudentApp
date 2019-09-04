@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class ClientInformation
- */
+
 @WebServlet(name = "clientInformation", urlPatterns = { "/clientInformation" })
 public class ClientInformation extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
