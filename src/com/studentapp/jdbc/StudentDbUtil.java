@@ -12,6 +12,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import com.studentapp.entity.Student;
+import com.studentapp.utils.DBUtils;
 
 public class StudentDbUtil {
 
@@ -66,29 +67,10 @@ public class StudentDbUtil {
 		}
 		finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			DBUtils.close(myConn, myStmt, myRs);
 		}		
 	}
 
-	private void close(Connection connection, Statement statement, ResultSet resultSet) {
-
-		try {
-			if (resultSet != null) {
-				resultSet.close();
-			}
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
-		
-	}
 
 	public void addStudent(Student theStudent) throws Exception {
 
@@ -117,7 +99,7 @@ public class StudentDbUtil {
 		}
 		finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			DBUtils.close(myConn, myStmt, null);
 		}
 	}
 
@@ -169,7 +151,7 @@ public class StudentDbUtil {
 		}
 		finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, myRs);
+			DBUtils.close(myConn, myStmt, myRs);
 		}
 	}
 
@@ -199,7 +181,7 @@ public class StudentDbUtil {
 		}
 		finally {
 			// clean up JDBC objects
-			close(myConn, myStmt, null);
+			DBUtils.close(myConn, myStmt, null);
 		}
 	}
 
@@ -229,7 +211,7 @@ public class StudentDbUtil {
 		}
 		finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
+			DBUtils.close(myConn, myStmt, null);
 		}	
 	}
 
@@ -259,7 +241,7 @@ public class StudentDbUtil {
 			
 		} finally {
 			// close JDBC objects
-			close(myConn, myStmt, myRs);
+			DBUtils.close(myConn, myStmt, myRs);
 		}	
 		
 		return num;
@@ -306,7 +288,7 @@ public class StudentDbUtil {
 		}
 		finally {
 			// clean up JDBC code
-			close(myConn, myStmt, null);
+			DBUtils.close(myConn, myStmt, null);
 		}	
 		
 	}
