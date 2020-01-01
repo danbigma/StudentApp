@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	id="WebApp_ID" version="3.1">
 	<display-name>StudentApp</display-name>
+
 	<filter>
 		<filter-name>logFilter</filter-name>
 		<filter-class>com.studentapp.log.LogFilter</filter-class>
@@ -12,6 +13,7 @@
 		<filter-name>logFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
 	<filter>
 		<filter-name>login</filter-name>
 		<filter-class>com.studentapp.filters.LoginFilter</filter-class>
@@ -20,9 +22,26 @@
 		<filter-name>login</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+	<filter>
+		<filter-name>LogFilter</filter-name>
+		<filter-class>com.studentapp.filters.LogFilter</filter-class>
+
+		<init-param>
+			<param-name>test-param</param-name>
+			<param-value>Initialization Paramter</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>LogFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>studentController</welcome-file>
 	</welcome-file-list>
+
 </web-app>

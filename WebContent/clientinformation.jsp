@@ -4,38 +4,32 @@
 
 <div class="container">
 
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-md-8">
-        
-        	<jsp:include page="databasecounter.jsp" />
+	<div class="row">
+		<div class="col"></div>
+		<div class="col-md-8">
 
 			<!-- put new button: Add Student -->
 
-			<input type="button" class="btn btn-link" value="Add Student"
-				onclick="window.location.href='studentController';" />
-				
-			<input type="button" class="btn btn-link" value="Delete various"
-				onclick="window.location.href='/StudentApp/deletestudents';" />
-				
-			<input type="button" class="btn btn-link" value="Client Information"
-				onclick="window.location.href='/StudentApp/clientInformation';" />
-
 			<table class="table">
-			  <tbody>
-			    <tr>
-			      <th scope="row">1</th>
-			      <td>Mark</td>
-			      <td>Otto</td>
-			      <td>@mdo</td>
-			    </tr>
-			  </tbody>
+
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="tempInfoList" items="${ infoList }">
+						<tr>
+							<td>${ tempInfoList.key }</td>
+							<td>${ tempInfoList.value }</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+
 			</table>
-        </div>
-        <div class="col"></div>
-    </div>
+		</div>
+		<div class="col"></div>
+	</div>
 
 </div>
-
-
-<jsp:include page="footer.jsp" />

@@ -3,9 +3,10 @@ package com.studentapp.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -27,9 +28,9 @@ public class ClientInformation extends HttpServlet {
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	            throws ServletException, IOException {
 	    	
-	    	List<String> infoList = new ArrayList<>();
+	    	HashMap<String, String> infoList = new HashMap<String, String>();
 	    	
-	        ServletOutputStream out = response.getOutputStream();
+//	        ServletOutputStream out = response.getOutputStream();
 	 
 	        String requestURL = request.getRequestURL().toString();
 	        String requestURI = request.getRequestURI();
@@ -52,15 +53,20 @@ public class ClientInformation extends HttpServlet {
 	        Enumeration<String> headers = request.getHeaderNames();
 	        while (headers.hasMoreElements()) {
 	            String header = headers.nextElement();
-	            out.println("<br><span>" + header + "</span>: " + request.getHeader(header));
+	            infoList.put(header + " ", request.getHeader(header));
 	        }
+	        
+	        // add infoList to the request
+	        request.setAttribute("infoList", infoList);
 	 
 	        // Servlet Context info:
-	        out.println("<br><br><b>Servlet Context info:</b>");
 	        ServletContext servletContext = request.getServletContext();
 	 
 	        // Местоположение веб приложения на жестком диске (hard disk).
 	        String realPath = servletContext.getRealPath("");
+	        
+	        RequestDispatcher dispatcher = request.getRequestDispatcher("clientinformation.jsp");
+	        dispatcher.forward(request, response);
 
 	    }
 	 
