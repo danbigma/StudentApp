@@ -6,7 +6,7 @@
 	<div class="row">
 		<div class="col"></div>
 		<div class="col-md-8">
-			<form action="studentController" method="post">
+			<form action="studentController" method="get">
 			
 				<input type="hidden" name="command" value="update" />
 				<input type="hidden" name="studentId" value="${THE_STUDENT.id}" />

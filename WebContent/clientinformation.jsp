@@ -5,8 +5,7 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col"></div>
-		<div class="col-md-8">
+		<div class="col-md-12">
 
 			<!-- put new button: Add Student -->
 
@@ -29,7 +28,6 @@
 
 			</table>
 		</div>
-		<div class="col"></div>
 	</div>
 
 </div>
