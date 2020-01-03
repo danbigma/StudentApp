@@ -6,24 +6,6 @@
 	<display-name>StudentApp</display-name>
 
 	<filter>
-		<filter-name>logFilter</filter-name>
-		<filter-class>com.studentapp.log.LogFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>logFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
-		<filter-name>login</filter-name>
-		<filter-class>com.studentapp.filters.LoginFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>login</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
 		<filter-name>LogFilter</filter-name>
 		<filter-class>com.studentapp.filters.LogFilter</filter-class>
 
