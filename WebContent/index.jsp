@@ -3,7 +3,7 @@
 <jsp:include page="header.jsp" />
 
 <div class="container">
-	<c:redirect url = "login.jsp"/>
+	<c:redirect url="login.jsp"/>
 </div>
 
 <jsp:include page="footer.jsp" />

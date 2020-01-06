@@ -68,8 +68,6 @@ public class MainServletController extends HttpServlet {
 
 			request.setAttribute("num", counter);
 
-			dispatcher = request.getRequestDispatcher("databasecounter.jsp");
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
