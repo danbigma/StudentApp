@@ -38,15 +38,12 @@ public class StudentDbUtil {
 			
 			// get a connection
 			myConn = dataSource.getConnection();
-			
 			// create sql statement
 			String sql = querys.getStudentsQuery();
-			
 			myStmt = myConn.createStatement();
-			
 			// execute query
 			myRs = myStmt.executeQuery(sql);
-			
+
 			// process result set
 			while (myRs.next()) {
 				
