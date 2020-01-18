@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.studentapp.entity.Student;
+import com.studentapp.enums.Action;
 import com.studentapp.jdbc.StudentDbUtil;
 
 
@@ -77,7 +78,7 @@ public class MainServletController extends HttpServlet {
 			throws Exception {
 		
 		if (theCommand == null) {
-		    theCommand = "list";
+		    theCommand = Action.LIST.getAction();
 		}
 		
 		// route to the appropriate method
