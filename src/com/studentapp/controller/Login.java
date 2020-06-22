@@ -23,10 +23,10 @@ public class Login extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
         // get request parameters for username and password
-        String username = request.getParameter("login");
-        String password = request.getParameter("password");
+        String usrname = request.getParameter("login");
+        String pasword = request.getParameter("password");
 
-        if (this.username.equals(username) && this.password.equals(password)) {
+        if (this.username.equals(usrname) && this.password.equals(pasword)) {
             //get the old session and invalidate
             HttpSession oldSession = request.getSession(false);
             if (oldSession != null) {

@@ -490,7 +490,7 @@ public class DateUtils {
      * a un Date
      */
     public static Date convertirFecha(String fecha){
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");	
         try
         {
             return df.parse(fecha);

@@ -20,7 +20,7 @@ import com.studentapp.jdbc.StudentDbUtil;
 
 
 @WebServlet("/studentController")
-public class MainServletController extends HttpServlet {
+public class MainController extends HttpServlet {
 	
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,6 @@ public class MainServletController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        
         // create our student db util ... and pass in the conn pool / datasource
         try {
             studentDbUtil = new StudentDbUtil(dataSource);
@@ -44,34 +43,23 @@ public class MainServletController extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		try {
-
 			String theCommand = request.getParameter("command");
-
 			commands(request, response, theCommand);
-
 		} catch (Exception exc) {
 			throw new ServletException(exc);
 		}
-
 	}
 
 	@SuppressWarnings("unused")
 	private void databasecounter(HttpServletRequest request, HttpServletResponse response) {
-
 		RequestDispatcher dispatcher = null;
-
 		try {
-
 			BigDecimal counter = studentDbUtil.getNumAllRegistr();
-
 			request.setAttribute("num", counter);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void commands(HttpServletRequest request, HttpServletResponse response, String theCommand)
@@ -83,27 +71,21 @@ public class MainServletController extends HttpServlet {
 		
 		// route to the appropriate method
 		switch (theCommand) {
-		
 		    case "list":
 		        listStudents(request, response);
 		        break;
-		        
 		    case "add":
 		        addStudent(request, response);
 		        break;
-		        
 		    case "load":
 		        loadStudent(request, response);
 		        break;
-		        
 		    case "update":
 		        updateStudent(request, response);
 		        break;
-		    
 		    case "delete":
 		        deleteStudent(request, response);
 		        break;
-		        
 		    default:
 		        listStudents(request, response);
 		        break;
@@ -112,7 +94,7 @@ public class MainServletController extends HttpServlet {
 
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response)
         throws Exception {
-
+    	
         // read student id from form data
         String theStudentId = request.getParameter("studentId");
         
@@ -125,7 +107,7 @@ public class MainServletController extends HttpServlet {
 
     private void updateStudent(HttpServletRequest request, HttpServletResponse response)
         throws Exception {
-
+    	
         // read student info from form data
         int id = Integer.parseInt(request.getParameter("studentId"));
         String firstName = request.getParameter("firstName");

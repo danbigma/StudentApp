@@ -19,22 +19,18 @@
 						<td><label>First name:</label></td>
 						<td><input type="text" class="form-control" name="firstName" /></td>
 					</tr>
-
 					<tr>
 						<td><label>Last name:</label></td>
 						<td><input type="text" class="form-control" name="lastName" /></td>
 					</tr>
-
 					<tr>
 						<td><label>Email:</label></td>
 						<td><input type="text" class="form-control" name="email" /></td>
 					</tr>
-					
 					<tr>
 						<td><label></label></td>
 						<td><input type="submit" class="form-control" value="Save"/></td>
 					</tr>
-					
 				</tbody>
 			</table>
 		</form>

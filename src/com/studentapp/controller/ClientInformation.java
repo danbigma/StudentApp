@@ -28,7 +28,7 @@ public class ClientInformation extends HttpServlet {
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	            throws ServletException, IOException {
 	    	
-	    	HashMap<String, String> infoList = new HashMap<String, String>();
+	    	HashMap<String, String> infoList = new HashMap<>();
 	    	
 //	        ServletOutputStream out = response.getOutputStream();
 	 
@@ -40,16 +40,16 @@ public class ClientInformation extends HttpServlet {
 	        String param1 = request.getParameter("text1");
 	        String param2 = request.getParameter("text2");
 	 
-	        // Server Infos
+	        // Server Info
 	        String serverName = request.getServerName();
 	        int serverPort = request.getServerPort();
 	        
-	        // Client Infos
+	        // Client Info
 	        String remoteAddr = request.getRemoteAddr();
 	        String remoteHost = request.getRemoteHost();
 	        String remoteUser = request.getRemoteUser();
 	 
-	        // Header Infos
+	        // Header Info
 	        Enumeration<String> headers = request.getHeaderNames();
 	        while (headers.hasMoreElements()) {
 	            String header = headers.nextElement();
