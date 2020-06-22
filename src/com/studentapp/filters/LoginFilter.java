@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter(filterName = "/loginfilter", urlPatterns = { "/loginfilter" })
+@WebFilter(filterName = "/loginfilter", urlPatterns = { "/admin/*" })
 public class LoginFilter implements Filter {
 	private ServletContext context;
 
@@ -27,19 +27,26 @@ public class LoginFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
+		String username;
+		
 		HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
         HttpSession session = req.getSession(false);
-
-        if (session == null) {   //checking whether the session exists
-            this.context.log("Unauthorized access request");
-            res.sendRedirect(req.getContextPath() + "/login.jsp");
+        
+        if (session != null) {
+        	username = (String) session.getAttribute("username");
         } else {
-            // pass the request along the filter chain
-            chain.doFilter(request, response);
+        	username = "default";
         }
-
+        
+        if ("admin".equals(username)) {
+        	chain.doFilter(request, response);
+        }  else {
+        	this.context.log("Unauthorized access request");
+        	res.sendRedirect(req.getContextPath() + "/login.jsp");
+        }
+        
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {

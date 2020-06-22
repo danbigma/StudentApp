@@ -37,10 +37,11 @@ public class Login extends HttpServlet {
 
             //setting session to expiry in 5 mins
             newSession.setMaxInactiveInterval(5*60);
+            newSession.setAttribute("username", username);
 
             Cookie message = new Cookie("message", "Welcome");
             response.addCookie(message);
-    		response.sendRedirect("studentController");
+    		response.sendRedirect(request.getContextPath() + "/admin");
         } else {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
             rd.include(request, response);

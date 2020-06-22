@@ -1,6 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<jsp:include page="header.jsp" />
+<c:set var="context" value="${pageContext.request.contextPath}" />
+
+<jsp:include page="../header.jsp" />
 
 <div class="container">
 	<div class="row">
@@ -9,9 +11,9 @@
 
 	<h3>Add new student</h3>
 		
-		<form action="studentController" method="GET">
+		<form action="${context}/admin" method="POST">
 		
-			<input type="hidden" name="command" value="add" />
+			<input type="hidden" name="action" value="add" />
 			
 			<table class="thead-dark">
 				<tbody>
@@ -38,14 +40,14 @@
 		<div style="clear: both;"></div>
 		
 		<p>
-			<a href="studentController">Back to List</a>
+			<a href="${context}/admin">Back to List</a>
 		</p>
 		</div>
 		<div class="col"></div>
 	</div>
 </div>
 
-<jsp:include page="footer.jsp" />
+<jsp:include page="../footer.jsp" />
 
 
 

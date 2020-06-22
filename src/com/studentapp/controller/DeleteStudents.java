@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import com.studentapp.entity.Student;
 import com.studentapp.jdbc.StudentDbUtil;
 
-@WebServlet("/deletestudents")
+@WebServlet("/admin/deletestudents")
 public class DeleteStudents extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -40,13 +40,13 @@ public class DeleteStudents extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String command = request.getParameter("command");
+		String action = request.getParameter("action");
 		
-		if (command==null) {
-			command = "list";
+		if (action==null) {
+			action = "list";
 		}
 		
-		switch (command) {
+		switch (action) {
 			case "delete":
 				deleteStudents(request, response);
 				break;
@@ -88,7 +88,7 @@ public class DeleteStudents extends HttpServlet {
 			
 	        request.setAttribute("studentList", students);
             
-	        dispatcher = request.getRequestDispatcher("deleteStudents.jsp");
+	        dispatcher = request.getRequestDispatcher("/admin/deleteStudents.jsp");
 	        dispatcher.forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();

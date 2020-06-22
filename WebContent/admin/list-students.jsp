@@ -1,6 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<jsp:include page="header.jsp" />
+<c:set var="context" value="${pageContext.request.contextPath}" />
+
+<jsp:include page="../header.jsp" />
 
 <div class="container">
 
@@ -13,14 +15,17 @@
 			<!-- put new button: Add Student -->
 
 			<input type="button" class="btn btn-link" value="Add Student"
-				onclick="window.location.href='add-student-form.jsp';" />
+				onclick="window.location.href='${context}/admin/add-student-form.jsp';" />
 				
 			<input type="button" class="btn btn-link" value="Delete various"
-				onclick="window.location.href='/StudentApp/deletestudents';" />
+				onclick="window.location.href='${context}/admin/deletestudents';" />
 				
 			<input type="button" class="btn btn-link" value="Client Information"
-				onclick="window.location.href='/StudentApp/clientInformation';" />
-
+				onclick="window.location.href='${context}/admin/clientInformation';" />
+			
+			<input type="button" class="btn btn-link" value="Logout"
+				onclick="window.location.href='${context}/logout';" />
+				
 			<table class="table">
 
                 <thead class="thead-dark">
@@ -35,14 +40,14 @@
                     <c:forEach var="tempStudent" items="${studentList}">
 
                         <!-- set up a link for each student -->
-                        <c:url var="tempLink" value="studentController">
-                            <c:param name="command" value="load" />
+                        <c:url var="tempLink" value="admin">
+                            <c:param name="action" value="load" />
                             <c:param name="studentId" value="${tempStudent.id}" />
                         </c:url>
 
                         <!--  set up a link to delete a student -->
-                        <c:url var="deleteLink" value="studentController">
-                            <c:param name="command" value="delete" />
+                        <c:url var="deleteLink" value="admin">
+                            <c:param name="action" value="delete" />
                             <c:param name="studentId" value="${tempStudent.id}" />
                         </c:url>
 
@@ -52,7 +57,7 @@
                             <td>${tempStudent.email}</td>
                             <td><a href="${tempLink}">Update</a> | <a
                                 href="${deleteLink}"
-                                onclick="if (!(confirm('Are you sure you want to delete this student?')))">
+                                onclick="if(!confirm('Are you sure you want to delete this student?'))">
                                     Delete</a></td>
                         </tr>
 
@@ -67,4 +72,4 @@
 </div>
 
 
-<jsp:include page="footer.jsp" />
+<jsp:include page="../footer.jsp" />

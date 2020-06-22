@@ -1,15 +1,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<jsp:include page="header.jsp" />
+<c:set var="context" value="${pageContext.request.contextPath}" />
+
+<jsp:include page="../header.jsp" />
 
 <div class="container">
     <div class="row">
         <div class="col"></div>
         <div class="col-md-8">
 			<form action="deletestudents" method="post">
-				<input type="hidden" name="command" value="delete" />
+				<input type="hidden" name="action" value="delete" />
 				<table class="table">
-					<input type="button" class="btn btn-link" value="Back to List" onclick="window.location.href='studentController';" />
+					<input type="button" class="btn btn-link" value="Back to List" onclick="window.location.href='${context}/admin';" />
 	                <thead class="thead-dark">
 	                    <tr>
 	                        <th scope="col">
@@ -23,13 +25,13 @@
 	                <tbody>
 	                    <c:forEach var="tempStudent" items="${studentList}">
 	                        <!-- set up a link for each student -->
-	                        <c:url var="tempLink" value="studentController">
-	                            <c:param name="command" value="load" />
+	                        <c:url var="tempLink" value="admin">
+	                            <c:param name="action" value="load" />
 	                            <c:param name="studentId" value="${tempStudent.id}" />
 	                        </c:url>
 	                        <!--  set up a link to delete a student -->
-	                        <c:url var="deleteLink" value="studentController">
-	                            <c:param name="command" value="delete" />
+	                        <c:url var="deleteLink" value="admin">
+	                            <c:param name="action" value="delete" />
 	                            <c:param name="studentId" value="${tempStudent.id}" />
 	                        </c:url>
 	                        <tr>
@@ -69,7 +71,7 @@
  	
 </script>
 
-<jsp:include page="footer.jsp" />
+<jsp:include page="../footer.jsp" />
 
 
 

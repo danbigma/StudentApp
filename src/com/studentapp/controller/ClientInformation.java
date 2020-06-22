@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet(name = "clientInformation", urlPatterns = { "/clientInformation" })
+@WebServlet(name = "clientInformation", urlPatterns = { "/admin/clientInformation" })
 public class ClientInformation extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
 	 
@@ -65,7 +65,7 @@ public class ClientInformation extends HttpServlet {
 	        // Местоположение веб приложения на жестком диске (hard disk).
 	        String realPath = servletContext.getRealPath("");
 	        
-	        RequestDispatcher dispatcher = request.getRequestDispatcher("clientinformation.jsp");
+	        RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/clientinformation.jsp");
 	        dispatcher.forward(request, response);
 
 	    }
