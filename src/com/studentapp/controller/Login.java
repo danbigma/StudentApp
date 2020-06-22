@@ -25,18 +25,25 @@ public class Login extends HttpServlet {
         // get request parameters for username and password
         String usrname = request.getParameter("login");
         String pasword = request.getParameter("password");
-
+        String savesession = request.getParameter("savesession");
+        
+        
         if (this.username.equals(usrname) && this.password.equals(pasword)) {
-            //get the old session and invalidate
+            // get the old session and invalidate
             HttpSession oldSession = request.getSession(false);
             if (oldSession != null) {
                 oldSession.invalidate();
             }
-            //generate a new session
+            // generate a new session
             HttpSession newSession = request.getSession(true);
 
-            //setting session to expiry in 5 mins
-            newSession.setMaxInactiveInterval(5*60);
+            if (savesession == null) {
+            	// setting session to expiry in 5 mins
+            	newSession.setMaxInactiveInterval(5*60);            	
+            } else {
+            	// setting session to expiry in 20 mins
+            	newSession.setMaxInactiveInterval(20*60);
+            }
             newSession.setAttribute("username", username);
 
             Cookie message = new Cookie("message", "Welcome");

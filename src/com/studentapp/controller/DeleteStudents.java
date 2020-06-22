@@ -13,14 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.studentapp.entity.Student;
-import com.studentapp.jdbc.StudentDbUtil;
+import com.studentapp.jdbc.StudentDbUtilImpl;
+import com.studentapp.jdbc.StudentDbUtilInterface;
 
 @WebServlet("/admin/deletestudents")
 public class DeleteStudents extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private StudentDbUtil utilsDB;
+	private StudentDbUtilInterface utilsDB;
 	
     @Resource(name = "jdbc/studentApp")
 	private DataSource dataSource;
@@ -30,7 +31,7 @@ public class DeleteStudents extends HttpServlet {
         super.init();
 			
 		try {
-			utilsDB = new StudentDbUtil(dataSource);
+			utilsDB = new StudentDbUtilImpl(dataSource);
 		} catch (Exception exc) {
             throw new ServletException(exc);
 		}

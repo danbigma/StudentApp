@@ -26,7 +26,7 @@
 			<input type="button" class="btn btn-link" value="Logout"
 				onclick="window.location.href='${context}/logout';" />
 				
-			<table class="table">
+			<table class="table table-sm">
 
                 <thead class="thead-dark">
                     <tr>

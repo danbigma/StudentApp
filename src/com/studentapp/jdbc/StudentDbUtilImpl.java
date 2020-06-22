@@ -14,16 +14,17 @@ import javax.sql.DataSource;
 import com.studentapp.entity.Student;
 import com.studentapp.utils.DBUtils;
 
-public class StudentDbUtil {
+public class StudentDbUtilImpl implements StudentDbUtilInterface {
 
 	private DataSource dataSource;
 	
 	public Querys querys = null;
 
-	public StudentDbUtil(DataSource theDataSource) {
+	public StudentDbUtilImpl(DataSource theDataSource) {
 		dataSource = theDataSource;
 	}
 	
+	@Override
 	public List<Student> getStudents() throws Exception {
 		
 		List<Student> students = new ArrayList<>();
@@ -69,6 +70,7 @@ public class StudentDbUtil {
 	}
 
 
+	@Override
 	public void addStudent(Student theStudent) throws Exception {
 
 		Connection myConn = null;
@@ -100,6 +102,7 @@ public class StudentDbUtil {
 		}
 	}
 
+	@Override
 	public Student getStudent(String theStudentId) throws Exception {
 
 		Student theStudent = null;
@@ -152,6 +155,7 @@ public class StudentDbUtil {
 		}
 	}
 
+	@Override
 	public void updateStudent(Student theStudent) throws Exception {
 		
 		Connection myConn = null;
@@ -182,6 +186,7 @@ public class StudentDbUtil {
 		}
 	}
 
+	@Override
 	public void deleteStudent(String theStudentId) throws Exception {
 
 		Connection myConn = null;
@@ -212,6 +217,7 @@ public class StudentDbUtil {
 		}	
 	}
 
+	@Override
 	public BigDecimal getNumAllRegistr() throws SQLException {
 		
 		Connection myConn = null;
@@ -244,6 +250,7 @@ public class StudentDbUtil {
 		return num;
 	}
 
+	@Override
 	public void deleteStudents(String[] studentsId) throws SQLException {
 		
 		Connection myConn = null;

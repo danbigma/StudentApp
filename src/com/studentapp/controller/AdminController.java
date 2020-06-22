@@ -16,14 +16,15 @@ import javax.sql.DataSource;
 
 import com.studentapp.entity.Student;
 import com.studentapp.enums.Action;
-import com.studentapp.jdbc.StudentDbUtil;
+import com.studentapp.jdbc.StudentDbUtilImpl;
+import com.studentapp.jdbc.StudentDbUtilInterface;
 
 @WebServlet("/admin")
 public class AdminController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private StudentDbUtil studentDbUtil;
+	private StudentDbUtilInterface studentDbUtil;
 
 	@Resource(name = "jdbc/studentApp")
 	private DataSource dataSource;
@@ -33,7 +34,7 @@ public class AdminController extends HttpServlet {
 		super.init();
 		// create our student db util ... and pass in the conn pool / datasource
 		try {
-			studentDbUtil = new StudentDbUtil(dataSource);
+			studentDbUtil = new StudentDbUtilImpl(dataSource);
 		} catch (Exception exc) {
 			throw new ServletException(exc);
 		}

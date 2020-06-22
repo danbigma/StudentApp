@@ -11,14 +11,14 @@
 
 			<!-- put new button: Add Student -->
 
-			<table class="table">
+			<table class="table table-sm">
 				<input type="button" class="btn btn-link" value="Back to List"
 					onclick="window.location.href='${context}/admin';" />
 
 				<thead class="thead-dark">
 					<tr>
 						<th scope="col">Name</th>
-						<th scope="col"></th>
+						<th scope="col">Value</th>
 					</tr>
 				</thead>
 				<tbody>
