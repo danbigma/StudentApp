@@ -142,7 +142,12 @@ public class AdminController extends HttpServlet {
 	}
 
 	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		
+		if (request.getMethod().equals("GET")) {
+			listStudents(request, response);
+			return;
+		}
+		
 		// read student info from form data
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
