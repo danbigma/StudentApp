@@ -31,22 +31,29 @@ public class ClientInformation extends HttpServlet {
 
 //	        ServletOutputStream out = response.getOutputStream();
 
-		infoList.put("trequestURL", request.getRequestURL().toString());
-		infoList.put("trequestURItrequestURI", request.getRequestURI());
-		infoList.put("tcontextPath", request.getContextPath());
-		infoList.put("tservletPath", request.getServletPath());
-		infoList.put("tqueryString", request.getQueryString());
-		infoList.put("tparam1", request.getParameter("text1"));
-		infoList.put("tparam2", request.getParameter("text2"));
+		infoList.put("requestURL", request.getRequestURL().toString());
+		infoList.put("requestURItrequestURI", request.getRequestURI());
+		infoList.put("contextPath", request.getContextPath());
+		infoList.put("servletPath", request.getServletPath());
+		infoList.put("queryString", request.getQueryString());
+		infoList.put("param1", request.getParameter("text1"));
+		infoList.put("param2", request.getParameter("text2"));
 
 		// Server Info
 		String serverName = request.getServerName();
 		int serverPort = request.getServerPort();
+		
+		infoList.put("serverName", serverName);
+		infoList.put("serverPort", String.valueOf(serverPort));
 
 		// Client Info
 		String remoteAddr = request.getRemoteAddr();
 		String remoteHost = request.getRemoteHost();
 		String remoteUser = request.getRemoteUser();
+		
+		infoList.put("remoteAddr", remoteAddr);
+		infoList.put("remoteHost", remoteHost);
+		infoList.put("remoteUser", remoteUser);
 
 		// Header Info
 		Enumeration<String> headers = request.getHeaderNames();
@@ -55,18 +62,19 @@ public class ClientInformation extends HttpServlet {
 			infoList.put(header + " ", request.getHeader(header));
 		}
 
-		// add infoList to the request
-		request.setAttribute("infoList", infoList);
-
 		// Servlet Context info:
 		ServletContext servletContext = request.getServletContext();
-
+		
 		// Местоположение веб приложения на жестком диске (hard disk).
-		String realPath = servletContext.getRealPath("");
+		String realPath = servletContext.getRealPath("/");
+		infoList.put("realPath", realPath);
 
+		
+		// add infoList to the request
+		request.setAttribute("infoList", infoList);
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/clientinformation.jsp");
 		dispatcher.forward(request, response);
-
 	}
 
 	@Override

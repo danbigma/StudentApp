@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.studentapp.entity.Student;
 import com.studentapp.enums.Action;
 import com.studentapp.jdbc.StudentDbUtilImpl;
@@ -23,6 +26,8 @@ import com.studentapp.jdbc.StudentDbUtilInterface;
 public class AdminController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	
+	static Logger logger = Logger.getLogger(AdminController.class);
 
 	private StudentDbUtilInterface studentDbUtil;
 
@@ -33,8 +38,11 @@ public class AdminController extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		// create student db util ... and pass in the conn pool / datasource
+        //PropertiesConfigurator is used to configure logger from properties file
+        PropertyConfigurator.configure("log4j.properties");
 		try {
 			studentDbUtil = new StudentDbUtilImpl(dataSource);
+			logger.info("Init method initial");
 		} catch (Exception exc) {
 			throw new ServletException(exc);
 		}
