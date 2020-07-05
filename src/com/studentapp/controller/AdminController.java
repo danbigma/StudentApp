@@ -32,7 +32,7 @@ public class AdminController extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		// create our student db util ... and pass in the conn pool / datasource
+		// create student db util ... and pass in the conn pool / datasource
 		try {
 			studentDbUtil = new StudentDbUtilImpl(dataSource);
 		} catch (Exception exc) {
@@ -55,6 +55,7 @@ public class AdminController extends HttpServlet {
 		doGet(req, resp);
 	}
 
+	@SuppressWarnings("unused")
 	private void databasecounter(HttpServletRequest request) {
 		try {
 			BigDecimal counter = studentDbUtil.getNumAllRegistr();
@@ -164,8 +165,6 @@ public class AdminController extends HttpServlet {
 	}
 
 	private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		databasecounter(request);
 
 		// get students from db util
 		List<Student> students = studentDbUtil.getStudents();

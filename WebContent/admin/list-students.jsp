@@ -9,22 +9,8 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-md-8">
-        
-        	<jsp:include page="databasecounter.jsp" />
-
 			<!-- put new button: Add Student -->
-
-			<input type="button" class="btn btn-link" value="Add Student"
-				onclick="window.location.href='${context}/admin/add-student-form.jsp';" />
-				
-			<input type="button" class="btn btn-link" value="Delete various"
-				onclick="window.location.href='${context}/admin/deletestudents';" />
-				
-			<input type="button" class="btn btn-link" value="Client Information"
-				onclick="window.location.href='${context}/admin/clientInformation';" />
-			
-			<input type="button" class="btn btn-link" value="Logout"
-				onclick="window.location.href='${context}/logout';" />
+			<jsp:include page="nav-menu.jsp" />
 				
 			<table class="table table-sm">
 

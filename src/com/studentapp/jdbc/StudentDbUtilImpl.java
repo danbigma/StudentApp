@@ -253,7 +253,6 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
 		int i=0;
 		
 		try {
-			
 			// get connection to database
 			myConn = dataSource.getConnection();
 			
@@ -269,16 +268,13 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
 			
 			sql.deleteCharAt(sql.lastIndexOf(","));
 			sql.append(" ) ");
-			
 			// prepare statement
 			myStmt = myConn.prepareStatement(sql.toString());
-			
 			// set params
 			for (String id : studentsId) {
 				i++;
 				myStmt.setString(i, id);
 			}
-			
 			// execute sql statement
 			myStmt.execute();
 		}

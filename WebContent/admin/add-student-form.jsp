@@ -8,6 +8,8 @@
 	<div class="row">
 		<div class="col"></div>
 		<div class="col-md-8">
+			<!-- put new button: Add Student -->
+			<jsp:include page="nav-menu.jsp" />
 
 			<h3>Add new student</h3>
 			<p>

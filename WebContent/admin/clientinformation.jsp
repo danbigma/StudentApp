@@ -10,6 +10,9 @@
 		<div class="col-md-12">
 
 			<!-- put new button: Add Student -->
+			<jsp:include page="nav-menu.jsp" />
+			
+			<!-- put new button: Add Student -->
 
 			<table class="table table-sm">
 				<input type="button" class="btn btn-link" value="Back to List"

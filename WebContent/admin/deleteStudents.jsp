@@ -8,6 +8,8 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-md-8">
+        	<!-- put new button: Add Student -->
+			<jsp:include page="nav-menu.jsp" />
 			<form action="deletestudents" method="post">
 				<input type="hidden" name="action" value="delete" />
 				<table class="table table-sm">
