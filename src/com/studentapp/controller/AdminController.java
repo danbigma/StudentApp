@@ -55,9 +55,7 @@ public class AdminController extends HttpServlet {
 		doGet(req, resp);
 	}
 
-	@SuppressWarnings("unused")
-	private void databasecounter(HttpServletRequest request, HttpServletResponse response) {
-		RequestDispatcher dispatcher = null;
+	private void databasecounter(HttpServletRequest request) {
 		try {
 			BigDecimal counter = studentDbUtil.getNumAllRegistr();
 			request.setAttribute("num", counter);
@@ -167,7 +165,7 @@ public class AdminController extends HttpServlet {
 
 	private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		databasecounter(request, response);
+		databasecounter(request);
 
 		// get students from db util
 		List<Student> students = studentDbUtil.getStudents();

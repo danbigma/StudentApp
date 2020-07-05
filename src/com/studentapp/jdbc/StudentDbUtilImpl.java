@@ -227,19 +227,12 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
 		BigDecimal num = null;
 		
 		try {
-			
 			myConn = dataSource.getConnection();
-			
 			String sql = "select count(*) as num from student";
-			
 			myStmt = myConn.createStatement();
-			
 			myRs = myStmt.executeQuery(sql);
-			
 			if (myRs.next()) {
-				
 				num = myRs.getBigDecimal("num");
-				
 			}
 			
 		} finally {
@@ -255,7 +248,6 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
 		
 		Connection myConn = null;
 		PreparedStatement myStmt = null;
-		
 		StringBuilder sql = new StringBuilder();
 		
 		int i=0;

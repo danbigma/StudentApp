@@ -19,15 +19,21 @@ public class Logout extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		HttpSession oldSession = request.getSession(false);
+		try {
+			HttpSession oldSession = request.getSession(false);
 
-		if (oldSession != null) {
-			
-			oldSession.invalidate();
-			oldSession.setMaxInactiveInterval(0);
+			if (oldSession != null) {
+				
+				oldSession.invalidate();
+				oldSession.setMaxInactiveInterval(0);
 
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
-			rd.include(request, response);
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+				rd.include(request, response);
+			}
+		} catch (ServletException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
