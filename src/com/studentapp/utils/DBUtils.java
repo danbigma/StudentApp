@@ -5,7 +5,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class DBUtils {
-	
+
+	private DBUtils() {
+		throw new IllegalStateException(DBUtils.class.getName());
+	}
+
 	public static void close(Connection connection, Statement statement, ResultSet resultSet) {
 
 		try {
@@ -23,6 +27,6 @@ public class DBUtils {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		
+
 	}
 }

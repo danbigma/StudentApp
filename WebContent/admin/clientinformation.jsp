@@ -5,19 +5,12 @@
 <jsp:include page="../header.jsp" />
 
 <div class="container">
-
 	<div class="row">
 		<div class="col-md-12">
-
 			<!-- put new button: Add Student -->
 			<jsp:include page="nav-menu.jsp" />
-			
-			<!-- put new button: Add Student -->
 
 			<table class="table table-sm">
-				<input type="button" class="btn btn-link" value="Back to List"
-					onclick="window.location.href='${context}/admin';" />
-
 				<thead class="thead-dark">
 					<tr>
 						<th scope="col">Name</th>
@@ -32,9 +25,7 @@
 						</tr>
 					</c:forEach>
 				</tbody>
-
 			</table>
 		</div>
 	</div>
-
 </div>

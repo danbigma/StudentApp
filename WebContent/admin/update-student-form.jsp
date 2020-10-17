@@ -12,7 +12,6 @@
 				<input type="hidden" name="studentId" value="${THE_STUDENT.id}" />
 
 				<table class="thead-dark">
-					<input type="button" class="btn btn-link" value="Back to List" onclick="window.location.href='admin';" />
 					<tbody>
 						<tr>
 							<div class="form-group">

@@ -6,7 +6,11 @@
 
     <div class="row">
         <div class="col-md-12">
+        	<!-- put new button: Add Student -->
+			<input type="button" class="btn btn-link" value="List"
+				onclick="window.location.href='${context}/admin';" />
 			<!-- put new button: Add Student -->
+			
 			<input type="button" class="btn btn-link" value="Add Student"
 				onclick="window.location.href='${context}/admin/add-student-form.jsp';" />
 				

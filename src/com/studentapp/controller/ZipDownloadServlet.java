@@ -60,23 +60,28 @@ public class ZipDownloadServlet extends HttpServlet {
 	private byte[] zipFiles(File directory, String[] files) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
-		byte bytes[] = new byte[2048];
+		byte[] bytes = new byte[2048];
 
 		for (String fileName : files) {
-			FileInputStream fis = new FileInputStream(
-					directory.getPath() + ZipDownloadServlet.FILE_SEPARATOR + fileName);
-			BufferedInputStream bis = new BufferedInputStream(fis);
+			try {
+				FileInputStream fis = new FileInputStream(
+						directory.getPath() + ZipDownloadServlet.FILE_SEPARATOR + fileName);
+				BufferedInputStream bis = new BufferedInputStream(fis);
 
-			zos.putNextEntry(new ZipEntry(fileName));
+				zos.putNextEntry(new ZipEntry(fileName));
 
-			int bytesRead;
-			while ((bytesRead = bis.read(bytes)) != -1) {
-				zos.write(bytes, 0, bytesRead);
+				int bytesRead;
+				while ((bytesRead = bis.read(bytes)) != -1) {
+					zos.write(bytes, 0, bytesRead);
+				}
+				zos.closeEntry();
+				bis.close();
+				fis.close();
+			} catch (Exception e) {
+				System.out.println("Error! Massage: " + e.getMessage());
 			}
-			zos.closeEntry();
-			bis.close();
-			fis.close();
 		}
+
 		zos.flush();
 		baos.flush();
 		zos.close();

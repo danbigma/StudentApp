@@ -13,7 +13,6 @@
 			<form action="deletestudents" method="post">
 				<input type="hidden" name="action" value="delete" />
 				<table class="table table-sm">
-					<input type="button" class="btn btn-link" value="Back to List" onclick="window.location.href='${context}/admin';" />
 	                <thead class="thead-dark">
 	                    <tr>
 	                        <th scope="col">
@@ -37,7 +36,7 @@
 	                    </c:forEach>
 	                </tbody>
 	            </table>
-	            <input type="submit" class="form-control" value="Delete" />
+	            <input type="submit" class="form-control" id="buttonDelete" disabled value="Delete" />
 	    	</form>
         </div>
         <div class="col"></div>
@@ -49,9 +48,10 @@
 	let checkboxAllCheckbox = document.getElementsByName("students");
 	checkboxAllCheckbox[0].onchange = selectAllCheckbox;
 	
+	let inputsCheckbox = document.getElementsByName("student");
+	let buttonDelete = document.getElementById("buttonDelete");
+	
 	function selectAllCheckbox() {
-		let inputsCheckbox = document.getElementsByName("student");
-		
 		for (var i=0; i<inputsCheckbox.length; i++) {
 			if (!checkboxAllCheckbox[0].checked) {
 				inputsCheckbox[i].checked = false;
@@ -59,7 +59,27 @@
 				inputsCheckbox[i].checked = true;
 			}
 		}
+		enableButtonDelete();
 	}
+	
+	function enableButtonDelete() {
+		let findCheckedElement = false;
+		for (var i=0; i<inputsCheckbox.length; i++) {
+			if (inputsCheckbox[i].checked) {
+				findCheckedElement = true;
+			}
+		}
+		if (findCheckedElement) {
+			buttonDelete.disabled = false;
+		} else {
+			buttonDelete.disabled = true;
+		}
+	}
+	
+	for (var i=0; i<inputsCheckbox.length; i++) {
+		inputsCheckbox[i].addEventListener("click", function(){enableButtonDelete()});
+	}
+	
  	
 </script>
 

@@ -12,9 +12,6 @@
 			<jsp:include page="nav-menu.jsp" />
 
 			<h3>Add new student</h3>
-			<p>
-				<a href="${context}/admin">Back to List</a>
-			</p>
 			<form action="${context}/admin" method="POST">
 
 				<input type="hidden" name="action" value="add" />
