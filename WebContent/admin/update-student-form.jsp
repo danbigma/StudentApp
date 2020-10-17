@@ -7,7 +7,7 @@
 		<div class="col"></div>
 		<div class="col-md-8">
 			<form action="admin" method="get">
-			
+
 				<input type="hidden" name="action" value="update" />
 				<input type="hidden" name="studentId" value="${THE_STUDENT.id}" />
 
@@ -23,19 +23,18 @@
 						<tr>
 							<td><label for="lastName">Last name:</label></td>
 							<td><input class="form-control" type="text" name="lastName"
-								value="${THE_STUDENT.lastName}" /></td>
+									value="${THE_STUDENT.lastName}" /></td>
 						</tr>
 
 						<tr>
 							<td><label for="email">Email:</label></td>
-							<td><input class="form-control" type="text" name="email"
-								value="${THE_STUDENT.email}" /></td>
+							<td><input class="form-control" type="text" name="email" value="${THE_STUDENT.email}" />
+							</td>
 						</tr>
 
 						<tr>
 							<td><label></label></td>
-							<td><input type="submit" class="form-control"
-								value="Save" /></td>
+							<td><input type="submit" class="form-control" value="Save" /></td>
 						</tr>
 
 					</tbody>
