@@ -27,16 +27,13 @@ public class ZipDownloadServlet extends HttpServlet {
 			// The path below is the root directory of data to be
 			// compressed.
 			String path = getServletContext().getRealPath("css");
-
 			File directory = new File(path);
 			String[] files = directory.list();
 
 			// Checks to see if the directory contains some files.
 			if (files != null && files.length > 0) {
-
 				// Call the zipFiles method for creating a zip stream.
 				byte[] zip = zipFiles(directory, files);
-
 				// Sends the response back to the user / browser. The
 				// content for zip file type is "application/zip". We
 				// also set the content disposition as attachment for
@@ -63,15 +60,13 @@ public class ZipDownloadServlet extends HttpServlet {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 		byte[] bytes = new byte[2048];
-
+		
 		for (String fileName : files) {
 			try {
 				FileInputStream fis = new FileInputStream(
 						directory.getPath() + ZipDownloadServlet.FILE_SEPARATOR + fileName);
 				BufferedInputStream bis = new BufferedInputStream(fis);
-
 				zos.putNextEntry(new ZipEntry(fileName));
-
 				int bytesRead;
 				while ((bytesRead = bis.read(bytes)) != -1) {
 					zos.write(bytes, 0, bytesRead);
@@ -83,7 +78,6 @@ public class ZipDownloadServlet extends HttpServlet {
 				System.out.println("Error! Massage: " + e.getMessage());
 			}
 		}
-
 		zos.flush();
 		baos.flush();
 		zos.close();
