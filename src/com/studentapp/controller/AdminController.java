@@ -79,7 +79,6 @@ public class AdminController extends HttpServlet {
 		if (action == null) {
 			action = Action.LIST.getAction();
 		}
-
 		// route to the appropriate method
 		switch (action) {
 		case "list":

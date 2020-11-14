@@ -11,10 +11,14 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
 import com.studentapp.entity.Student;
 import com.studentapp.utils.DBUtils;
 
 public class StudentDbUtilImpl implements StudentDbUtilInterface {
+	
+	static Logger logger = Logger.getLogger(StudentDbUtilImpl.class);
 
 	private DataSource dataSource;
 	
@@ -41,6 +45,7 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
 			myConn = dataSource.getConnection();
 			// create sql statement
 			String sql = querys.getStudentsQuery();
+			logger.debug("Query ==> " + sql);
 			myStmt = myConn.createStatement();
 			// execute query
 			myRs = myStmt.executeQuery(sql);
