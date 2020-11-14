@@ -19,21 +19,27 @@
 		<filter-name>LogFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
-<!-- 	<filter> -->
-<!-- 		<filter-name>LoginFilter</filter-name> -->
-<!-- 		<filter-class>com.studentapp.filters.LoginFilter</filter-class> -->
-<!-- 	</filter> -->
 
-<!-- 	<filter-mapping> -->
-<!-- 		<filter-name>LoginFilter</filter-name> -->
-<!-- 		<url-pattern>/*</url-pattern> -->
-<!-- 	</filter-mapping> -->
+	<!-- <filter> -->
+	<!-- <filter-name>LoginFilter</filter-name> -->
+	<!-- <filter-class>com.studentapp.filters.LoginFilter</filter-class> -->
+	<!-- </filter> -->
+
+	<!-- <filter-mapping> -->
+	<!-- <filter-name>LoginFilter</filter-name> -->
+	<!-- <url-pattern>/*</url-pattern> -->
+	<!-- </filter-mapping> -->
 
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>admin</welcome-file>
 	</welcome-file-list>
+
+	<error-page>
+		<!-- Missing resource -->
+		<error-code>404</error-code>
+		<location>/admin</location>
+	</error-page>
 
 </web-app>

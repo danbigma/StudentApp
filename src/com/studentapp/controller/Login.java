@@ -25,7 +25,7 @@ public class Login extends HttpServlet {
         // get request parameters for username and password
         String usrname = request.getParameter("login");
         String pasword = request.getParameter("password");
-        String savesession = request.getParameter("savesession");
+        boolean savesession = request.getParameter("savesession") != null;
         
         
         if (this.username.equals(usrname) && this.password.equals(pasword)) {
@@ -37,7 +37,7 @@ public class Login extends HttpServlet {
             // generate a new session
             HttpSession newSession = request.getSession(true);
 
-            if (savesession == null) {
+            if (savesession) {
             	// setting session to expiry in 5 mins
             	newSession.setMaxInactiveInterval(5*60);            	
             } else {

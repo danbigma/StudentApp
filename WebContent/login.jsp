@@ -22,7 +22,7 @@
 						type="password" name="password" value="" />
 				</div>
 				<div class="form-group">
-					<input type="checkbox" name="savesession" value="false" />
+					<input type="checkbox" name="savesession" value="true" />
 					<label for="savesession">Save session</label>
 				</div>
 				<input type="submit" class="form-control btn btn-primary"
