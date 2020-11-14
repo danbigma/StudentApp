@@ -45,6 +45,8 @@ public class ZipDownloadServlet extends HttpServlet {
 				ServletOutputStream sos = response.getOutputStream();
 				response.setContentType("application/zip");
 				response.setHeader("Content-Disposition", "attachment; filename=data.zip");
+				response.setBufferSize(zip.length);
+				response.setContentLength(zip.length);
 
 				sos.write(zip);
 				sos.flush();
