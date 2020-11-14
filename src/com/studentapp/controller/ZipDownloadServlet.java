@@ -69,6 +69,7 @@ public class ZipDownloadServlet extends HttpServlet {
 				zos.putNextEntry(new ZipEntry(fileName));
 				int bytesRead;
 				while ((bytesRead = bis.read(bytes)) != -1) {
+					System.out.println(bytesRead);
 					zos.write(bytes, 0, bytesRead);
 				}
 				zos.closeEntry();

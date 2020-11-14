@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import com.studentapp.entity.Student;
 import com.studentapp.enums.Action;
@@ -39,7 +39,8 @@ public class AdminController extends HttpServlet {
 		super.init();
 		// create student db util ... and pass in the conn pool / datasource
         //PropertiesConfigurator is used to configure logger from properties file
-        PropertyConfigurator.configure("log4j.properties");
+        // PropertyConfigurator.configure("log4j.properties");
+		BasicConfigurator.configure();
 		try {
 			studentDbUtil = new StudentDbUtilImpl(dataSource);
 			logger.info("Init method initial");
