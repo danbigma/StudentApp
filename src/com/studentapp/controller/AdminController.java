@@ -26,7 +26,7 @@ import com.studentapp.jdbc.StudentDbUtilInterface;
 public class AdminController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	static Logger logger = Logger.getLogger(AdminController.class);
 
 	private StudentDbUtilInterface studentDbUtil;
@@ -38,8 +38,8 @@ public class AdminController extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		// create student db util ... and pass in the conn pool / datasource
-        //PropertiesConfigurator is used to configure logger from properties file
-        // PropertyConfigurator.configure("log4j.properties");
+		// PropertiesConfigurator is used to configure logger from properties file
+		// PropertyConfigurator.configure("log4j.properties");
 		BasicConfigurator.configure();
 		try {
 			studentDbUtil = new StudentDbUtilImpl(dataSource);
@@ -149,8 +149,8 @@ public class AdminController extends HttpServlet {
 		String email = request.getParameter("email");
 		// create a new student object
 		Student theStudent = new Student(firstName, lastName, email);
-		
-		if (firstName != null && lastName != null && email != null) {
+
+		if (!"".equals(theStudent) && !"".equals(lastName) && !"".equals(email)) {
 			// add the student to the database
 			studentDbUtil.addStudent(theStudent);
 		}
