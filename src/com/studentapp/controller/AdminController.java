@@ -112,6 +112,10 @@ public class AdminController extends HttpServlet {
 	}
 
 	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		if (request.getMethod().equals("GET")) {
+			listStudents(request, response);
+			return;
+		}
 		// read student info from form data
 		int id = Integer.parseInt(request.getParameter("studentId"));
 		String firstName = request.getParameter("firstName");

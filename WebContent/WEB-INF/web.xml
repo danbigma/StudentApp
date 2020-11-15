@@ -39,7 +39,7 @@
 	<error-page>
 		<!-- Missing resource -->
 		<error-code>404</error-code>
-		<location>/admin</location>
+		<location>/login.jsp</location>
 	</error-page>
 
 </web-app>
