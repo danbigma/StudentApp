@@ -11,48 +11,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 @WebServlet("/login")
 public class Login extends HttpServlet {
-	
+
 	private static final long serialVersionUID = 1L;
+
+	static Logger log = Logger.getLogger(Login.class);
 	
 	private final String username = "admin";
-    private final String password = "admin";
-    
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+	private final String password = "admin";
 
-        // get request parameters for username and password
-        String usrname = request.getParameter("login");
-        String pasword = request.getParameter("password");
-        boolean savesession = request.getParameter("savesession") != null;
-        
-        
-        if (this.username.equals(usrname) && this.password.equals(pasword)) {
-            // get the old session and invalidate
-            HttpSession oldSession = request.getSession(false);
-            if (oldSession != null) {
-                oldSession.invalidate();
-            }
-            // generate a new session
-            HttpSession newSession = request.getSession(true);
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-            if (savesession) {
-            	// setting session to expiry in 5 mins
-            	newSession.setMaxInactiveInterval(5*60);            	
-            } else {
-            	// setting session to expiry in 20 mins
-            	newSession.setMaxInactiveInterval(20*60);
-            }
-            newSession.setAttribute("username", username);
+		// get request parameters for username and password
+		String usrname = request.getParameter("login");
+		String pasword = request.getParameter("password");
+		boolean savesession = request.getParameter("savesession") != null;
 
-            Cookie message = new Cookie("message", "Welcome");
-            response.addCookie(message);
-    		response.sendRedirect(request.getContextPath() + "/admin");
-        } else {
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
-            rd.include(request, response);
-        }
-    }
+		try {
+			if (this.username.equals(usrname) && this.password.equals(pasword)) {
+				// get the old session and invalidate
+				HttpSession oldSession = request.getSession(false);
+				if (oldSession != null) {
+					oldSession.invalidate();
+				}
+				// generate a new session
+				HttpSession newSession = request.getSession(true);
+
+				if (savesession) {
+					// setting session to expiry in 30 mins
+					newSession.setMaxInactiveInterval(30 * 60);
+				} else {
+					// setting session to expiry in 1 mins
+					newSession.setMaxInactiveInterval(1 * 60);
+				}
+				newSession.setAttribute("username", username);
+
+				Cookie message = new Cookie("message", "Welcome");
+				response.addCookie(message);
+				response.sendRedirect(request.getContextPath() + "/admin");
+			} else {
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+				rd.include(request, response);
+			}
+		} catch (Exception e) {
+			log.error(e.getStackTrace());
+		}
+
+	}
 
 }

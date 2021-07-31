@@ -26,32 +26,32 @@ public class LoginFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
-		String username;
-		
-		HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
 
-        HttpSession session = req.getSession(false);
-        
-        if (session != null) {
-        	username = (String) session.getAttribute("username");
-        } else {
-        	username = "default";
-        }
-        
-        if ("admin".equals(username)) {
-        	chain.doFilter(request, response);
-        }  else {
-        	this.context.log("Unauthorized access request");
-        	res.sendRedirect(req.getContextPath() + "/login.jsp");
-        }
-        
+		String username;
+
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse res = (HttpServletResponse) response;
+
+		HttpSession session = req.getSession(false);
+
+		if (session != null) {
+			username = (String) session.getAttribute("username");
+		} else {
+			username = "default";
+		}
+
+		if ("admin".equals(username)) {
+			chain.doFilter(request, response);
+		} else {
+			this.context.log("Unauthorized access request");
+			res.sendRedirect(req.getContextPath() + "/login.jsp");
+		}
+
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {
-        this.context = fConfig.getServletContext();
-        this.context.log("AuthenticationFilter initialized");
+		this.context = fConfig.getServletContext();
+		this.context.log("AuthenticationFilter initialized");
 		System.out.println("Login filter init!");
 	}
 
