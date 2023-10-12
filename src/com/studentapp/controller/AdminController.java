@@ -154,8 +154,8 @@ public class AdminController extends HttpServlet {
 		// create a new student object
 		Student theStudent = new Student(firstName, lastName, email);
 
-		if (!"".equals(theStudent) && !"".equals(lastName) && !"".equals(email)) {
-			// add the student to the database
+		if (!"".equals(lastName) && !"".equals(email)) {
+			// add the studenst to the database
 			studentDbUtil.addStudent(theStudent);
 		}
 		// send back to main page (the student list)

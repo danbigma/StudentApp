@@ -1,39 +1,30 @@
 package com.studentapp.jdbc;
 
 public class Querys {
-	
-	public String addStudentQuery() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(" insert into ");
-		sb.append(" student ");
-		sb.append(" (first_name, last_name, email) ");
-		sb.append(" values ");
-		sb.append(" (?, ?, ?) ");
-		
-		return sb.toString();
-	}
-	
-	public String getStudentsQuery() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(" select ");
-		sb.append(" * ");
-		sb.append(" from ");
-		sb.append(" student ");
-//		sb.append(" order by last_name ");
-		
-		return sb.toString();
-	}
-	
-	public String getStudentQuery() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(" select ");
-		sb.append(" * ");
-		sb.append(" from ");
-		sb.append(" student ");
-		sb.append(" where ");
-		sb.append(" id = ? ");
-		
-		return sb.toString();
-	}
+
+    public String addStudentQuery() {
+        return "INSERT INTO student (first_name, last_name, email) VALUES (?, ?, ?)";
+    }
+
+    public String getStudentsQuery() {
+        return "SELECT * FROM student";
+    }
+
+    public String getStudentQuery() {
+        return "SELECT * FROM student WHERE id = ?";
+    }
+    
+    public String updateStudentQuery() {
+        return "UPDATE student SET first_name = ?, last_name = ?, email = ? WHERE id = ?";
+    }
+    
+    public String deleteStudentQuery() {
+        return "DELETE FROM student WHERE id = ?";
+    }
+    
+    public String getNumAllRegistrQuery() {
+        return "SELECT COUNT(*) AS num FROM student";
+    }
 
 }
+

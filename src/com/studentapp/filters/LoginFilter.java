@@ -24,30 +24,32 @@ public class LoginFilter implements Filter {
 	public void destroy() {
 	}
 
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-
-		String username;
-
-		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
-
-		HttpSession session = req.getSession(false);
-
-		if (session != null) {
-			username = (String) session.getAttribute("username");
-		} else {
-			username = "default";
-		}
-
-		if ("admin".equals(username)) {
-			chain.doFilter(request, response);
-		} else {
-			this.context.log("Unauthorized access request");
-			res.sendRedirect(req.getContextPath() + "/login.jsp");
-		}
-
+	private boolean isUserAdmin(HttpServletRequest request) {
+	    HttpSession session = request.getSession(false);
+	    if (session != null) {
+	        String username = (String) session.getAttribute("username");
+	        return "admin".equals(username);
+	    }
+	    return false;
 	}
+
+	private void redirectToLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    this.context.log("Unauthorized access request");
+	    response.sendRedirect(request.getContextPath() + "/login.jsp");
+	}
+
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	        throws IOException, ServletException {
+	    HttpServletRequest httpRequest = (HttpServletRequest) request;
+	    HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+	    if (isUserAdmin(httpRequest)) {
+	        chain.doFilter(request, response);
+	    } else {
+	        redirectToLoginPage(httpRequest, httpResponse);
+	    }
+	}
+
 
 	public void init(FilterConfig fConfig) throws ServletException {
 		this.context = fConfig.getServletContext();

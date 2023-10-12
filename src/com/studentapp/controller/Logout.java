@@ -2,7 +2,6 @@ package com.studentapp.controller;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,28 +14,28 @@ import org.apache.log4j.Logger;
 @WebServlet("/logout")
 public class Logout extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
-	
-	static Logger log = Logger.getLogger(Logout.class);
+    private static final long serialVersionUID = 1L;
+    static Logger log = Logger.getLogger(Logout.class);
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            HttpSession oldSession = request.getSession(false);
 
-		try {
-			HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                // Invalida la sesión
+                oldSession.invalidate();
+                log.info("Sesión cerrada por el usuario.");
+            }
 
-			if (oldSession != null) {
-
-				oldSession.invalidate();
-				oldSession.setMaxInactiveInterval(0);
-
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
-				rd.include(request, response);
-			}
-		} catch (ServletException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+            // Redirige al usuario a la página principal u otra página apropiada después del cierre de sesión
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
+        } catch (Exception e) {
+            // Maneja cualquier excepción
+            log.error("Error al cerrar la sesión: " + e.getMessage(), e);
+            // Redirige a una página de error o manejo de errores
+            response.sendRedirect(request.getContextPath() + "/error.jsp");
+        }
+    }
 }
+
