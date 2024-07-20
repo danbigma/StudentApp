@@ -18,89 +18,89 @@ import com.studentapp.jdbc.StudentDbUtilInterface;
 
 @WebServlet("/admin/deletestudents")
 public class DeleteStudents extends HttpServlet {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private StudentDbUtilInterface utilsDB;
-	
+
+    private static final long serialVersionUID = 1L;
+
+    private StudentDbUtilInterface utilsDB;
+
     @Resource(name = "jdbc/studentApp")
-	private DataSource dataSource;
+    private DataSource dataSource;
 
     @Override
     public void init() throws ServletException {
         super.init();
-			
-		try {
-			utilsDB = new StudentDbUtilImpl(dataSource);
-		} catch (Exception exc) {
+
+        try {
+            utilsDB = new StudentDbUtilImpl(dataSource);
+        } catch (Exception exc) {
             throw new ServletException(exc);
-		}
-	}
+        }
+    }
 
     @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		String action = request.getParameter("action");
-		
-		if (action==null) {
-			action = "list";
-		}
-		
-		switch (action) {
-			case "delete":
-				deleteStudents(request, response);
-				break;
-			case "list":
-				listStudents(request, response);
-				break;
-			default:
-				listStudents(request, response);
-				break;
-		}
-		
-	}
-	
-	private void deleteStudents(HttpServletRequest request, HttpServletResponse response) {
-		
-		String[] studentsId = request.getParameterValues("student");
-		
-		if (studentsId == null)  {
-			listStudents(request, response);
-		}
-		
-		try {
-			utilsDB.deleteStudents(studentsId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		listStudents(request, response);
-	}
-	
-	private void listStudents(HttpServletRequest request, HttpServletResponse response) {
-		
-		RequestDispatcher dispatcher = null;
-		
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            action = "list";
+        }
+
+        switch (action) {
+            case "delete":
+                deleteStudents(request, response);
+                break;
+            case "list":
+                listStudents(request, response);
+                break;
+            default:
+                listStudents(request, response);
+                break;
+        }
+
+    }
+
+    private void deleteStudents(HttpServletRequest request, HttpServletResponse response) {
+
+        String[] studentsId = request.getParameterValues("student");
+
+        if (studentsId == null) {
+            listStudents(request, response);
+        }
+
+        try {
+            utilsDB.deleteStudents(studentsId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        listStudents(request, response);
+    }
+
+    private void listStudents(HttpServletRequest request, HttpServletResponse response) {
+
+        RequestDispatcher dispatcher = null;
+
         List<Student> students = null;
-        
-		try {
-			students = utilsDB.getStudents();
-			
-	        request.setAttribute("studentList", students);
-            
-	        dispatcher = request.getRequestDispatcher("/admin/deleteStudents.jsp");
-	        dispatcher.forward(request, response);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-	}
+        try {
+            students = utilsDB.getStudents();
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		doGet(request, response);
-	}
+            request.setAttribute("studentList", students);
+
+            dispatcher = request.getRequestDispatcher("/admin/deleteStudents.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
 
 }
