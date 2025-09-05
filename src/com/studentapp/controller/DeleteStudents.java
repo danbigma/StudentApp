@@ -4,20 +4,21 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.studentapp.entity.Student;
+import com.studentapp.enums.Action;
 import com.studentapp.jdbc.StudentDbUtilImpl;
 import com.studentapp.jdbc.StudentDbUtilInterface;
+import com.studentapp.web.BaseServlet;
+import com.studentapp.web.Web;
 
 @WebServlet("/admin/deletestudents")
-public class DeleteStudents extends HttpServlet {
+public class DeleteStudents extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,61 +41,40 @@ public class DeleteStudents extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String action = request.getParameter("action");
-
-        if (action == null) {
-            action = "list";
-        }
-
+        Action action = actionOf(request, Action.LIST);
         switch (action) {
-            case "delete":
+            case DELETE:
                 deleteStudents(request, response);
                 break;
-            case "list":
-                listStudents(request, response);
-                break;
+            case LIST:
             default:
                 listStudents(request, response);
-                break;
         }
-
     }
 
     private void deleteStudents(HttpServletRequest request, HttpServletResponse response) {
-
-        String[] studentsId = request.getParameterValues("student");
-
+        String[] studentsId = request.getParameterValues(Web.Params.STUDENT_CHECKBOX);
         if (studentsId == null) {
             listStudents(request, response);
+            return;
         }
-
         try {
             utilsDB.deleteStudents(studentsId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         listStudents(request, response);
     }
 
     private void listStudents(HttpServletRequest request, HttpServletResponse response) {
-
-        RequestDispatcher dispatcher = null;
-
         List<Student> students = null;
-
         try {
             students = utilsDB.getStudents();
-
-            request.setAttribute("studentList", students);
-
-            dispatcher = request.getRequestDispatcher("/admin/deleteStudents.jsp");
-            dispatcher.forward(request, response);
+            request.setAttribute(Web.Attrs.STUDENT_LIST, students);
+            forward(request, response, Web.Views.DELETE_STUDENTS);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

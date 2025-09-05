@@ -1,15 +1,26 @@
 <Context>
-
-	<Resource 
-		name='jdbc/studentApp' 
-		auth="Container"
-		type="javax.sql.DataSource" 
-		maxActive="20" 
-		maxIdle="5" 
-		maxWait="10000"
-		username="root" 
-		password="12345678"
-		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost:3306/web_student_tracker?useSSL=false&amp;serverTimezone=UTC" />
-
+    <Resource
+            name="jdbc/studentApp"
+            auth="Container"
+            type="javax.sql.DataSource"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            url="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&amp;serverTimezone=UTC"
+            username="${DB_USER}"
+            password="${DB_PASSWORD}"
+            initialSize="5"
+            maxActive="30"
+            maxIdle="10"
+            minIdle="5"
+            maxWait="10000"
+            testOnBorrow="true"
+            testWhileIdle="true"
+            validationQuery="SELECT 1"
+            validationInterval="30000"
+            timeBetweenEvictionRunsMillis="30000"
+            minEvictableIdleTimeMillis="600000"
+            removeAbandonedOnBorrow="true"
+            removeAbandonedTimeout="60"
+            logAbandoned="true"
+            jdbcInterceptors="StatementFinalizer;SlowQueryReport(threshold=2000)" />
 </Context>

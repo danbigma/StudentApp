@@ -1,8 +1,8 @@
 package com.studentapp.enums;
 
 public enum Action {
-	
-	LIST("list"), ADD("add"), LOAD("load"), UPDATE("update"), DELETE("delete");
+    
+    LIST("list"), ADD("add"), LOAD("load"), UPDATE("update"), DELETE("delete"), DASHBOARD("dashboard");
 	
 	private String action;
 	
@@ -10,8 +10,8 @@ public enum Action {
 		this.action = action;
 	}
 	
-	public String getAction() {
-		return action;
-	}
+    public String getAction() {
+        return action;
+    }
 
 }

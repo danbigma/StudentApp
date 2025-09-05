@@ -14,6 +14,10 @@ public class Querys {
         return "SELECT * FROM student WHERE id = ?";
     }
     
+    public String getRecentStudentsQuery() {
+        return "SELECT * FROM student ORDER BY id DESC LIMIT ?";
+    }
+    
     public String updateStudentQuery() {
         return "UPDATE student SET first_name = ?, last_name = ?, email = ? WHERE id = ?";
     }
@@ -27,4 +31,3 @@ public class Querys {
     }
 
 }
-

@@ -7,21 +7,26 @@
     <div class="row">
         <div class="col-md-12">
         	<!-- put new button: Add Student -->
-			<input type="button" class="btn btn-link" value="List"
-				onclick="window.location.href='${context}/admin';" />
+			<a class="btn btn-link" href="${context}/admin">List</a>
+			<a class="btn btn-link" href="${context}/admin?action=dashboard">Dashboard</a>
 			<!-- put new button: Add Student -->
 			
-			<input type="button" class="btn btn-link" value="Add Student"
-				onclick="window.location.href='${context}/admin/add-student-form.jsp';" />
+			<a class="btn btn-link" href="${context}/admin/add-student-form.jsp">Add Student</a>
 				
-			<input type="button" class="btn btn-link" value="Delete various"
-				onclick="window.location.href='${context}/admin/deletestudents';" />
+			<a class="btn btn-link" href="${context}/admin/deletestudents">Delete various</a>
 				
-			<input type="button" class="btn btn-link" value="Client Information"
-				onclick="window.location.href='${context}/admin/clientInformation';" />
+			<a class="btn btn-link" href="${context}/admin/clientInformation">Client Information</a>
 			
-			<input type="button" class="btn btn-link" value="Logout"
-				onclick="window.location.href='${context}/logout';" />
+			<form id="seedForm" action="${context}/admin/seed" method="post" style="display:inline; margin-left:8px;">
+				<input type="hidden" name="_csrf" value="${csrfToken}" />
+				<input type="hidden" name="count" value="100" />
+				<button type="submit" class="btn btn-link" data-confirm="Seed 100 demo students?">Seed demo data</button>
+			</form>
+
+            <form id="logoutForm" action="${context}/logout" method="post" style="display:inline;">
+                <input type="hidden" name="_csrf" value="${csrfToken}" />
+                <button type="submit" class="btn btn-link">Logout</button>
+            </form>
 				
         </div>
     </div>

@@ -8,16 +8,17 @@ public class Student {
     private String email;
 
     public Student(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        // Use setters to normalize input (trim/null-safe)
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmail(email);
     }
 
     public Student(int id, String firstName, String lastName, String email) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmail(email);
     }
 
     public int getId() {
@@ -33,7 +34,7 @@ public class Student {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName.trim();
+        this.firstName = firstName == null ? "" : firstName.trim();
     }
 
     public String getLastName() {
@@ -41,7 +42,7 @@ public class Student {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName.trim();
+        this.lastName = lastName == null ? "" : lastName.trim();
     }
 
     public String getEmail() {
@@ -49,7 +50,7 @@ public class Student {
     }
 
     public void setEmail(String email) {
-        this.email = email.trim();
+        this.email = email == null ? "" : email.trim();
     }
 
     @Override

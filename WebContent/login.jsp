@@ -11,13 +11,14 @@
     <div class="row justify-content-center">
         <div class="col-md-3">
             <form action="login" method="post">
+                <input type="hidden" name="_csrf" value="${csrfToken}" />
                 <div class="form-group">
                     <label for="login">Login</label>
                     <input class="form-control" type="text" name="login" value="" />
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input class="form-control" type="password" name "password" value="" />
+                    <input class="form-control" type="password" name="password" value="" />
                 </div>
                 <div class="form-group">
                     <input type="checkbox" name="savesession" value="true" id="savesession" />

@@ -9,16 +9,18 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.log4j.Logger;
 
 //Implements Filter class
 public class LogFilter implements Filter {
+    private static final Logger logger = Logger.getLogger(LogFilter.class);
 	public void init(FilterConfig config) throws ServletException {
-		System.out.println("LogFilter init!");
+		logger.info("LogFilter init!");
 		// Get init parameter
 		String testParam = config.getInitParameter("test-param");
 
 		// Print the init parameter
-		System.out.println("Test Param: " + testParam);
+		logger.info("Test Param: " + testParam);
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -28,12 +30,12 @@ public class LogFilter implements Filter {
         
         String servletPath = req.getServletPath();
  
-        System.out.println("#INFO " + new Date());
-        System.out.println("ServletPath: " + servletPath);  
-        System.out.println("ContextPath " + req.getContextPath());
-        System.out.println("URL => " + req.getRequestURL());
-        System.out.println("QueryString => " + req.getQueryString());
-        System.out.println("---------------------------------------------------");
+        logger.info("#INFO " + new Date());
+        logger.info("ServletPath: " + servletPath);
+        logger.info("ContextPath " + req.getContextPath());
+        logger.info("URL => " + req.getRequestURL());
+        logger.info("QueryString => " + req.getQueryString());
+        logger.info("---------------------------------------------------");
 
 		// Get the IP address of client machine.
 //		String ipAddress = request.getRemoteAddr();
@@ -52,6 +54,6 @@ public class LogFilter implements Filter {
 		 * Called before the Filter instance is removed from service by the web
 		 * container
 		 */
-		System.out.println("LogFilter destroy!");
+		logger.info("LogFilter destroy!");
 	}
 }

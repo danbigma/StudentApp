@@ -68,16 +68,15 @@ public class ZipDownloadServlet extends HttpServlet {
 				BufferedInputStream bis = new BufferedInputStream(fis);
 				zos.putNextEntry(new ZipEntry(fileName));
 				int bytesRead;
-				while ((bytesRead = bis.read(bytes)) != -1) {
-					System.out.println(bytesRead);
-					zos.write(bytes, 0, bytesRead);
-				}
+                while ((bytesRead = bis.read(bytes)) != -1) {
+                    zos.write(bytes, 0, bytesRead);
+                }
 				zos.closeEntry();
 				bis.close();
 				fis.close();
-			} catch (Exception e) {
-				System.out.println("Error! Massage: " + e.getMessage());
-			}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
 		zos.flush();
 		baos.flush();

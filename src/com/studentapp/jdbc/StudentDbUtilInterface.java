@@ -22,4 +22,9 @@ public interface StudentDbUtilInterface {
 
 	void deleteStudents(String[] studentsId) throws SQLException;
 
+	// Seed demo data
+	void seedStudents(int count) throws SQLException;
+
+	List<Student> getRecentStudents(int limit) throws SQLException;
+
 }
