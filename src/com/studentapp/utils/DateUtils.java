@@ -3,27 +3,26 @@ package com.studentapp.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Years;
-
-import com.mysql.cj.log.Log;
-import com.mysql.cj.log.LogFactory;
-
-
 
 public class DateUtils {
 	   
@@ -40,9 +39,8 @@ public class DateUtils {
     public static final String NOVIEMBRE = "11";
     public static final String DICIEMBRE = "12";
 
-    private static final String className = DateUtils.class.getName();
-    
-//    private static Log log = LogFactory.getLog(className);
+    private static final Logger log = Logger.getLogger(DateUtils.class);
+
 
     private static final long UN_DIA_EN_MILISEGUNDOS = 86400000;
 
@@ -62,7 +60,7 @@ public class DateUtils {
                 calendar.setTime(fecha);
                 return calendar.getTime();
             } catch (RuntimeException e) {
-//               log.debug("Error ", e);
+               log.warn("Error al intentar convertir un objeto Date.", e);
             }
         }
         return null;
@@ -311,15 +309,15 @@ public class DateUtils {
     }
 
     //suma a la fecha indicada el numero de mes indicados por parametro
+    /**
+     * @deprecated Usar {@link #sumarMeses(Date, Integer)} en su lugar. Este método es un duplicado con un nombre poco claro.
+     */
+    @Deprecated
     public static Date p(Date fechaInicial, Integer meses) {
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(fechaInicial);
-        cal.add(Calendar.MONTH, meses);
-            return cal.getTime();
+        return sumarMeses(fechaInicial, meses);
     }
 
-    public static Date sumarDias(Date fechaInicial, Integer dias) {
+    public static Date sumarDias(Date fechaInicial, int dias) {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(fechaInicial);
@@ -328,7 +326,7 @@ public class DateUtils {
     }
 
 
-    public static Date sumarMeses(Date fechaInicial, Integer meses) {
+    public static Date sumarMeses(Date fechaInicial, int meses) {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(fechaInicial);
@@ -337,7 +335,7 @@ public class DateUtils {
     }
 
 
-    public static Date restarDias(Date fechaInicial, Integer dias) {
+    public static Date restarDias(Date fechaInicial, int dias) {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(fechaInicial);
@@ -634,19 +632,14 @@ public class DateUtils {
     }
     
     public static boolean isFinDeSemana(Date fecha) {
-        boolean finDeSemana = false;
-
         if (fecha != null) {
-            Calendar calendario = new GregorianCalendar();
-            calendario.setTime(fecha);
-
-            if (calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
-                    || calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                finDeSemana = true;
-            }
+            // Usando la API moderna java.time para mayor claridad y seguridad
+            Instant instant = fecha.toInstant();
+            DayOfWeek day = instant.atZone(ZoneId.systemDefault()).getDayOfWeek();
+            return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
         }
 
-        return finDeSemana;
+        return false;
     }
     
     //INI - ICO-36896 - 08-06-2015
@@ -701,19 +694,11 @@ public class DateUtils {
     
     
     public static double restarFechas(Date fechaInicio, Date fechaFin){
-        
-        GregorianCalendar fInicio = new GregorianCalendar();
-        fInicio.setTime(fechaInicio);
-        GregorianCalendar fFin = new GregorianCalendar();
-        fFin.setTime(fechaFin);
-        //Le sumamos 1 al mes porque en GregorianCalendar en numero de mes empieza por 0, pero la clase DateTime el mes empieza por 1
-        DateTime start = new DateTime(fInicio.get(Calendar.YEAR), fInicio.get(Calendar.MONTH) + 1, fInicio.get(Calendar.DATE), 0, 0, 0, 0);
-        DateTime end = new DateTime(fFin.get(Calendar.YEAR), fFin.get(Calendar.MONTH) + 1, fFin.get(Calendar.DATE), 0, 0, 0, 0);    
-        
-        //calcula el número de dias entre 2 fechas
-        Days days = Days.daysBetween(start, end);
-        
-        return days.getDays();
+        // Refactorizado para usar java.time
+        LocalDate start = Instant.ofEpochMilli(fechaInicio.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = Instant.ofEpochMilli(fechaFin.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+        return ChronoUnit.DAYS.between(start, end);
     }
     
     /**

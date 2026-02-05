@@ -1,10 +1,22 @@
 /* global window, document, fetch */
 (function() {
-  function setBadge(el, up) {
+  // Loader gating state
+  window.AppReady = { dom: false, dtPending: 0 };
+  function addDtWait(){ try { window.AppReady.dtPending++; } catch (e) {} }
+  function markDtReady(){ try { if (window.AppReady.dtPending>0) window.AppReady.dtPending--; } catch (e) {} tryHide(); }
+  function tryHide(){ try { if (window.AppReady.dom && window.AppReady.dtPending === 0) hideLoader(); } catch (e) {} }
+  function setBadgeClasses(el, up) {
     if (!el) return;
-    el.classList.remove('badge-secondary', 'badge-success', 'badge-danger');
-    el.classList.add(up ? 'badge-success' : 'badge-danger');
+    el.classList.remove('bg-secondary', 'bg-success', 'bg-danger');
+    if (!el.classList.contains('badge')) el.classList.add('badge');
+    el.classList.add(up ? 'bg-success' : 'bg-danger');
     el.textContent = up ? 'UP' : 'DOWN';
+  }
+
+  function setBadgeForSelector(selector, up) {
+    var list = document.querySelectorAll(selector);
+    if (!list || !list.length) return;
+    list.forEach(function(el){ setBadgeClasses(el, up); });
   }
 
   function getContext() {
@@ -17,19 +29,19 @@
     fetch(base, { credentials: 'same-origin' })
       .then(function(r) { return r.json(); })
       .then(function(json) {
-        setBadge(document.getElementById('healthStatus'), json && json.status === 'UP');
+        setBadgeForSelector('.js-health', json && json.status === 'UP');
         var dbUp = json && json.db && json.db.status === 'UP';
-        setBadge(document.getElementById('dbStatus'), !!dbUp);
+        setBadgeForSelector('.js-db', !!dbUp);
       })
       .catch(function() {
-        setBadge(document.getElementById('healthStatus'), false);
-        setBadge(document.getElementById('dbStatus'), false);
-      })
-      .then(function(){ hideLoader(); });
+        setBadgeForSelector('.js-health', false);
+        setBadgeForSelector('.js-db', false);
+      });
   }
 
   function initStudentSearch() {
     var input = document.getElementById('studentSearch');
+    var inputTop = document.getElementById('studentSearchTop');
     var table = document.getElementById('studentsTable');
     var pager = document.getElementById('studentsPagination');
     var pageSizeSel = document.getElementById('studentsPageSize');
@@ -38,22 +50,39 @@
     // If DataTables is available, use it for a richer UX and skip custom logic
     if (window.jQuery && jQuery.fn && typeof jQuery.fn.DataTable === 'function') {
       var $table = jQuery(table);
+      var btnClass = (document.documentElement.getAttribute('data-bs-theme') === 'dark')
+        ? 'btn btn-sm btn-light'
+        : 'btn btn-sm btn-outline-secondary';
+      try { addDtWait(); $table.on('init.dt', function(){ markDtReady(); }); } catch (e) {}
       var dt = $table.DataTable({
         paging: true,
+        pagingType: 'simple_numbers',
         searching: true,
         info: false,
         lengthChange: false,
         pageLength: pageSizeSel ? parseInt(pageSizeSel.value||'10',10) : 10,
         dom: 'Bfrtip',
-        buttons: [ 'copy', 'csvHtml5', 'excelHtml5', 'pdfHtml5', 'print' ],
+        buttons: [
+          { extend: 'copy', className: btnClass },
+          { extend: 'csv', className: btnClass },
+          { extend: 'excel', className: btnClass },
+          { extend: 'pdf', className: btnClass },
+          { extend: 'print', className: btnClass }
+        ],
         order: [],
         columnDefs: [
           { targets: -1, orderable: false }
         ]
       });
+      try {
+        var host = $table.closest('.card').find('.card-body').first();
+        dt.buttons().container().addClass('mb-2').appendTo(host.length ? host : $table.closest('div'));
+      } catch (e) {}
+      try { setTimeout(markDtReady, 0); } catch (e2) {}
       if (input) input.addEventListener('input', function(){ dt.search(input.value).draw(); });
+      if (inputTop) inputTop.addEventListener('input', function(){ dt.search(inputTop.value).draw(); });
       if (pageSizeSel) pageSizeSel.addEventListener('change', function(){ dt.page.len(parseInt(pageSizeSel.value,10)||10).draw(); });
-      if (window.jQuery && jQuery.fn && jQuery.fn.select2 && pageSizeSel) { jQuery(pageSizeSel).select2({ minimumResultsForSearch: Infinity, width: '100px' }); }
+      // Keep native select styling (Bootstrap 5)
       // expose for external triggers
       try { window.StudentTable = { apply: function(){ dt.draw(false); updateStudentsChart(table, dt); } }; } catch (e) {}
       // Update chart on draw
@@ -134,6 +163,9 @@
     if (input) {
       input.addEventListener('input', function(){ state.q = (input.value||'').toLowerCase(); state.page = 1; apply(); });
     }
+    if (inputTop) {
+      inputTop.addEventListener('input', function(){ state.q = (inputTop.value||'').toLowerCase(); state.page = 1; apply(); });
+    }
     if (pageSizeSel) {
       pageSizeSel.addEventListener('change', function(){ state.pageSize = parseInt(pageSizeSel.value,10)||10; state.page=1; apply(); });
     }
@@ -193,19 +225,21 @@
   }
 
   function initCopyRequestId() {
-    var btn = document.getElementById('copyRequestIdBtn');
-    var target = document.getElementById('requestIdVal');
+    const btn = document.getElementById('copyRequestIdBtn');
+    const target = document.getElementById('requestIdVal');
     if (!btn || !target) return;
-    btn.addEventListener('click', function() {
-      var text = target.textContent || target.innerText;
+
+    btn.addEventListener('click', () => {
+      const text = target.textContent || target.innerText;
       if (!navigator.clipboard) {
-        var ta = document.createElement('textarea');
+        // Fallback para navegadores antiguos (API obsoleta)
+        const ta = document.createElement('textarea');
         ta.value = text; document.body.appendChild(ta); ta.select();
         try { document.execCommand('copy'); } catch (e) {}
         document.body.removeChild(ta);
         return;
       }
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(text).catch(err => console.error('Error al copiar el texto: ', err));
     });
   }
 
@@ -216,19 +250,16 @@
     initConfirmLinks();
     initCopyRequestId();
     initBulkDeletePage();
-    initTheme();
-    // hide loader soon after initial init
-    try { window.requestAnimationFrame(hideLoader); } catch (e) { hideLoader(); }
+    initNavActive();
+    // mark DOM ready; loader hides when DTs (if any) finish
+    try { window.AppReady.dom = true; } catch (e) {}
     initToastsFromFlash();
     initEditStudentModal();
     initAjaxDelete();
     initTooltips();
   });
 
-  window.addEventListener('load', function(){
-    // Fallback in case DOMContentLoaded fired too early
-    hideLoader();
-  });
+window.addEventListener('load', function(){ tryHide(); });
 
   function initBulkDeletePage() {
     var form = document.querySelector('form[action="deletestudents"], form[action$="/deletestudents"]');
@@ -238,22 +269,39 @@
     var inputs = form.querySelectorAll('input[name="student"]');
     var btn = form.querySelector('#buttonDelete');
     var search = document.getElementById('bulkSearch');
+    var pageSizeSel = document.getElementById('bulkPageSize');
     var dt = null;
 
     // Enhance with DataTables if available
     if (table && window.jQuery && jQuery.fn && typeof jQuery.fn.DataTable === 'function') {
+      try { addDtWait(); jQuery(table).on('init.dt', function(){ markDtReady(); }); } catch (e) {}
+      var btnClass = (document.documentElement.getAttribute('data-bs-theme') === 'dark')
+        ? 'btn btn-sm btn-light'
+        : 'btn btn-sm btn-outline-secondary';
       dt = jQuery(table).DataTable({
         paging: true,
+        pagingType: 'simple_numbers',
         searching: true,
         info: false,
         lengthChange: false,
         pageLength: 10,
         dom: 'Bfrtip',
-        buttons: [ 'copy', 'csvHtml5', 'excelHtml5', 'pdfHtml5', 'print' ],
+        buttons: [
+          { extend: 'copy', className: btnClass },
+          { extend: 'csv', className: btnClass },
+          { extend: 'excel', className: btnClass },
+          { extend: 'pdf', className: btnClass },
+          { extend: 'print', className: btnClass }
+        ],
         order: [],
         columnDefs: [ { targets: 0, orderable: false } ]
       });
+      try {
+        var host = jQuery(table).closest('.card').find('.card-header');
+        dt.buttons().container().addClass('mb-0').appendTo(host.length ? host : jQuery(table).closest('div'));
+      } catch (e) {}
       if (search) search.addEventListener('input', function(){ dt.search(search.value).draw(); });
+      if (pageSizeSel) pageSizeSel.addEventListener('change', function(){ dt.page.len(parseInt(pageSizeSel.value,10)||10).draw(); });
       // When table redraws (paging/search), re-bind and update
       jQuery(table).on('draw.dt', function(){
         inputs = form.querySelectorAll('input[name="student"]');
@@ -261,11 +309,14 @@
         enableButton();
         if (selectAll) selectAll.checked = false;
       });
+      try { setTimeout(markDtReady, 0); } catch (e2) {}
     }
     function enableButton() {
-      var any = false;
-      inputs.forEach(function(ch){ if (ch.checked) any = true; });
+      var any = false, count = 0;
+      inputs.forEach(function(ch){ if (ch.checked) { any = true; count++; } });
       if (btn) btn.disabled = !any;
+      var badge = document.getElementById('selectedCountBadge');
+      if (badge) { badge.textContent = (count || 0) + ' selected'; badge.className = 'badge ' + (count ? 'text-bg-warning' : 'bg-secondary'); }
     }
     function toggleAll() {
       var checked = !!(selectAll && selectAll.checked);
@@ -306,50 +357,11 @@
     confirmDialog(msg).then(function(ok){ if (ok) f.submit(); });
   });
 
-  // Theme toggle (light/dark) with localStorage and prefers-color-scheme
-  function initTheme() {
-    var toggle = document.getElementById('themeSwitch');
-    var legacyBtn = document.getElementById('themeToggle');
-    var saved = localStorage.getItem('theme');
-    var prefersDark = false;
-    try {
-      prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } catch (e) {}
-    var current = saved || (prefersDark ? 'dark' : 'light');
-    applyTheme(current);
-    if (toggle) {
-      try { toggle.checked = (current === 'dark'); } catch (e) {}
-      toggle.addEventListener('change', function(){
-        current = toggle.checked ? 'dark' : 'light';
-        localStorage.setItem('theme', current);
-        applyTheme(current);
-      });
-    }
-    if (legacyBtn) { // fallback if older template exists
-      legacyBtn.addEventListener('click', function(){
-        current = (current === 'dark') ? 'light' : 'dark';
-        localStorage.setItem('theme', current);
-        applyTheme(current);
-      });
-    }
-  }
-
-  function applyTheme(theme) {
-    var html = document.documentElement;
-    if (theme === 'dark') {
-      html.setAttribute('data-theme', 'dark');
-      var t = document.getElementById('themeSwitch'); if (t) t.checked = true;
-    } else {
-      html.removeAttribute('data-theme');
-      var t2 = document.getElementById('themeSwitch'); if (t2) t2.checked = false;
-    }
-  }
-
   function hideLoader() {
     var el = document.getElementById('appLoader');
     if (!el) return;
-    if (!el.classList.contains('hidden')) el.classList.add('hidden');
-    try { el.setAttribute('aria-busy', 'false'); } catch (e) {}
+    try { el.classList.add('d-none'); } catch (e) { el.style.display = 'none'; }
+    try { el.setAttribute('aria-busy', 'false'); } catch (e2) {}
   }
 
   function initToastsFromFlash() {
@@ -365,25 +377,36 @@
     var container = document.getElementById('toastContainer');
     if (!container) return;
     var toast = document.createElement('div');
-    toast.className = 'toast';
+    var variant = (type === 'success') ? 'text-bg-success' : (type === 'danger' ? 'text-bg-danger' : '');
+    toast.className = 'toast align-items-center ' + variant;
     toast.setAttribute('role', 'alert');
     toast.setAttribute('aria-live', 'assertive');
     toast.setAttribute('aria-atomic', 'true');
-    toast.setAttribute('data-delay', '3000');
-    toast.innerHTML = '<div class="toast-header">'
-      + '<strong class="mr-auto">' + (type === 'success' ? 'Success' : 'Notice') + '</strong>'
-      + '<small class="text-muted">now</small>'
-      + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-      + '</div>'
-      + '<div class="toast-body text-' + (type === 'success' ? 'success' : 'danger') + '">' + escapeHtml(message) + '</div>';
+    toast.setAttribute('data-bs-delay', '3000');
+    toast.innerHTML = '<div class="d-flex">'
+      + '<div class="toast-body">' + escapeHtml(message) + '</div>'
+      + '<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>'
+      + '</div>';
     container.appendChild(toast);
-    try { $(toast).toast('show'); } catch (e) { toast.style.display='block'; }
+    try {
+      if (window.bootstrap && window.bootstrap.Toast) {
+        var t = new window.bootstrap.Toast(toast, { autohide: true, delay: 3000 });
+        t.show();
+      } else {
+        toast.style.display='block';
+      }
+    } catch (e) { toast.style.display='block'; }
   }
 
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"];/g, function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c] || c;
-    });
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;' // o &apos;
+    };
+    return String(s).replace(/[&<>"']/g, (m) => map[m]);
   }
 
   function initAjaxDelete() {
@@ -395,15 +418,27 @@
         if (!ok) return;
         var fd = new FormData(form);
         var url = form.getAttribute('action') || form.action; // avoid name="action" collision
+        // also send CSRF header for filters that expect header
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        var csrf = meta ? meta.getAttribute('content') : null;
         fetch(url, {
           method: 'POST',
           credentials: 'same-origin',
-          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+          headers: (function(){
+            var h = { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' };
+            if (csrf) h['X-CSRF-Token'] = csrf;
+            return h;
+          })(),
           body: fd
         })
-        .then(function(r){ return r.json(); })
-        .then(function(json){
-          if (json && json.ok) {
+        .then(function(r){
+          var ct = r.headers.get('content-type') || '';
+          if (ct.indexOf('application/json') >= 0) return r.json().then(function(j){ return { ok: r.ok, json: j }; });
+          return r.text().then(function(){ return { ok: r.ok, json: null }; });
+        })
+        .then(function(res){
+          var success = (res.json && res.json.ok) || (!res.json && res.ok);
+          if (success) {
             var id = form.getAttribute('data-id');
             var row = document.getElementById('student-row-' + id);
             if (row) row.parentNode.removeChild(row);
@@ -422,27 +457,31 @@
   }
 
   function initEditStudentModal() {
-    var modal = $('#editStudentModal');
-    if (!modal.length) return;
-    modal.on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget);
-      var id = button.data('id');
-      var first = button.data('first');
-      var last = button.data('last');
-      var email = button.data('email');
-      $('#editStudentId').val(id);
-      $('#editFirstName').val(first);
-      $('#editLastName').val(last);
-      $('#editEmail').val(email);
+    var modal = document.getElementById('editStudentModal');
+    if (!modal) return;
+    modal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      if (!button) return;
+      var id = button.getAttribute('data-id');
+      var first = button.getAttribute('data-first');
+      var last = button.getAttribute('data-last');
+      var email = button.getAttribute('data-email');
+      var setVal = function(id, val){ var el = document.getElementById(id); if (el) el.value = val || ''; };
+      setVal('editStudentId', id);
+      setVal('editFirstName', first);
+      setVal('editLastName', last);
+      setVal('editEmail', email);
     });
   }
 
   function initTooltips() {
-    if (window.jQuery && jQuery.fn && typeof jQuery.fn.tooltip === 'function') {
-      try { jQuery('[data-toggle="tooltip"]').tooltip({ container: 'body' }); } catch (e) {}
-      // Initialize tooltips for elements marked with data-toggle2="tooltip" without altering existing data-toggle (e.g., modal)
-      try { jQuery('[data-toggle2="tooltip"]').each(function(){ jQuery(this).tooltip({ container: 'body' }); }); } catch (e) {}
-    }
+    if (!(window.bootstrap && window.bootstrap.Tooltip)) return;
+    try {
+      var triggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'));
+      triggerList.forEach(function(el){ new window.bootstrap.Tooltip(el, { container: 'body' }); });
+      var triggerList2 = [].slice.call(document.querySelectorAll('[data-bs-toggle2="tooltip"], [data-toggle2="tooltip"]'));
+      triggerList2.forEach(function(el){ new window.bootstrap.Tooltip(el, { container: 'body' }); });
+    } catch (e) {}
   }
 
   // Build/update Chart.js chart based on visible rows (email domain distribution)
@@ -483,3 +522,23 @@
     }
   }
 })();
+  function initNavActive() {
+    var meta = document.querySelector('meta[name="current-route"]');
+    var current = meta ? meta.getAttribute('content') : null;
+    if (!current || current.trim() === '') {
+      var p = window.location.pathname;
+      if (p.indexOf('/admin/deletestudents') >= 0) current = 'delete';
+      else if (p.indexOf('/admin/clientInformation') >= 0) current = 'clientinfo';
+      else current = 'dashboard';
+    }
+    var links = document.querySelectorAll('.js-nav-route');
+    links.forEach(function(a){ a.classList.remove('active'); });
+    links.forEach(function(a){
+      var r = a.getAttribute('data-route');
+      if (r === current) {
+        a.classList.add('active');
+        a.setAttribute('aria-current', 'page');
+      }
+      a.addEventListener('click', function(e){ if (r === current) { e.preventDefault(); } });
+    });
+  }

@@ -18,6 +18,10 @@ public class Querys {
         return "SELECT * FROM student ORDER BY id DESC LIMIT ?";
     }
     
+    public String getStudentsPagedQuery() {
+        return "SELECT * FROM student ORDER BY id DESC LIMIT ? OFFSET ?";
+    }
+    
     public String updateStudentQuery() {
         return "UPDATE student SET first_name = ?, last_name = ?, email = ? WHERE id = ?";
     }

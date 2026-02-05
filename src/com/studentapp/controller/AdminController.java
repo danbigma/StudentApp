@@ -36,13 +36,11 @@ public class AdminController extends BaseServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        // Logger configured via classpath log4j.properties
-        try {
-            studentDbUtil = new StudentDbUtilImpl(dataSource);
-            logger.info("Init method initial");
-        } catch (Exception exc) {
-            throw new ServletException(exc);
+        if (dataSource == null) {
+            throw new ServletException("DataSource 'jdbc/studentApp' is not available. Check server configuration (context.xml) and database connectivity.");
         }
+        this.studentDbUtil = new StudentDbUtilImpl(dataSource);
+        logger.info("AdminController initialized successfully.");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,8 +63,10 @@ public class AdminController extends BaseServlet {
         try {
             BigDecimal counter = studentDbUtil.getNumAllRegistr();
             request.setAttribute(Web.Attrs.NUM, counter);
-        } catch (SQLException e) {
-            logger.error("Error getting DB counter", e);
+        } catch (Exception e) {
+            // Catching generic Exception is better here to avoid unhandled NullPointerException
+            // if studentDbUtil is not initialized.
+            logger.error("Error getting student count from database", e);
         }
     }
 
@@ -192,6 +192,7 @@ public class AdminController extends BaseServlet {
         databasecounter(request);
         List<Student> students = studentDbUtil.getStudents();
         request.setAttribute(Web.Attrs.STUDENT_LIST, students);
+        request.setAttribute("activeMenu", "dashboard");
         forward(request, response, Web.Views.DASHBOARD);
     }
 

@@ -4,31 +4,25 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <jsp:include page="../header.jsp" />
 
-<div class="container my-3">
+<div class="container py-4">
   <c:if test="${empty infoList}">
     <div class="alert alert-danger" role="alert">Ha ocurrido un error al obtener la información del cliente.</div>
   </c:if>
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-sm mb-3">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <h3 class="mb-0">Client Information</h3>
-          <div>
-            <small class="text-muted mr-2">Request ID:</small>
-            <code id="requestIdVal">${infoList['requestId']}</code>
-            <button id="copyRequestIdBtn" class="btn btn-sm btn-outline-primary ml-2" data-toggle="tooltip" title="Copy Request ID" aria-label="Copy Request ID"><i class="bi bi-clipboard"></i><span class="sr-only">Copy</span></button>
-          </div>
-        </div>
-      </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Client Information</h3>
+    <div>
+      <small class="text-muted me-2">Request ID:</small>
+      <code id="requestIdVal">${infoList['requestId']}</code>
+      <button id="copyRequestIdBtn" class="btn btn-sm btn-outline-primary ms-2" type="button">Copy</button>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Request</strong></div>
-        <div class="card-body p-0">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Request</div>
+        <div class="table-responsive">
           <table class="table table-sm mb-0">
             <tbody>
               <tr><td>receivedAt</td><td>${infoList['receivedAt']}</td></tr>
@@ -48,10 +42,11 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Cliente</strong></div>
-        <div class="card-body p-0">
+
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-header">Client</div>
+        <div class="table-responsive">
           <table class="table table-sm mb-0">
             <tbody>
               <tr><td>remoteAddr</td><td>${infoList['remoteAddr']}</td></tr>
@@ -60,20 +55,14 @@
               <tr><td>clientIpEffective</td><td>${infoList['clientIpEffective']}</td></tr>
               <tr><td>userAgent</td><td>${infoList['userAgent']}</td></tr>
               <tr><td>isMobileUA</td><td>${infoList['isMobileUA']}</td></tr>
-              <tr><td>locale:primary</td><td>${infoList['locale:primary']}</td></tr>
-              <tr><td>locale:accepted</td><td>${infoList['locale:accepted']}</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Servidor</strong></div>
-        <div class="card-body p-0">
+      <div class="card">
+        <div class="card-header">Server</div>
+        <div class="table-responsive">
           <table class="table table-sm mb-0">
             <tbody>
               <tr><td>serverName</td><td>${infoList['serverName']}</td></tr>
@@ -87,33 +76,17 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Sesión</strong></div>
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'session:')}">
-                  <tr><td>${e.key}</td><td>${e.value}</td></tr>
-                </c:if>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Cookies</strong></div>
-        <div class="card-body p-0">
+  <div class="row g-3 mt-1">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Session / Cookies</div>
+        <div class="table-responsive">
           <table class="table table-sm mb-0">
             <tbody>
               <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'cookie:')}">
+                <c:if test="${fn:startsWith(e.key, 'session:') || fn:startsWith(e.key, 'cookie:')}">
                   <tr><td>${e.key}</td><td>${e.value}</td></tr>
                 </c:if>
               </c:forEach>
@@ -122,52 +95,15 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>JVM / Host</strong></div>
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'jvm:') || fn:startsWith(e.key, 'os:') || fn:startsWith(e.key, 'mem:')}">
-                  <tr><td>${e.key}</td><td>${e.value}</td></tr>
-                </c:if>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Headers</strong></div>
-        <div class="card-body p-0">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Headers / Params</div>
+        <div class="table-responsive">
           <table class="table table-sm mb-0">
             <tbody>
               <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'header:')}">
-                  <tr><td>${e.key}</td><td>${e.value}</td></tr>
-                </c:if>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-header"><strong>Parámetros</strong></div>
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'param:')}">
+                <c:if test="${fn:startsWith(e.key, 'header:') || fn:startsWith(e.key, 'param:')}">
                   <tr><td>${e.key}</td><td><code>${e.value}</code></td></tr>
                 </c:if>
               </c:forEach>
@@ -177,7 +113,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <jsp:include page="../footer.jsp" />

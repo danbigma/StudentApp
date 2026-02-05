@@ -68,6 +68,7 @@ public class ClientInformation extends BaseServlet {
 
         // Agregar infoList al request
         request.setAttribute(Web.Attrs.INFO_LIST, infoList);
+        request.setAttribute("activeMenu", "clientinfo");
 
         forward(request, response, Web.Views.CLIENT_INFORMATION);
     }

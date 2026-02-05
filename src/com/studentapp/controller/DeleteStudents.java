@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
 import com.studentapp.entity.Student;
 import com.studentapp.enums.Action;
 import com.studentapp.jdbc.StudentDbUtilImpl;
@@ -21,6 +23,8 @@ import com.studentapp.web.Web;
 public class DeleteStudents extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final Logger logger = Logger.getLogger(DeleteStudents.class);
 
     private StudentDbUtilInterface utilsDB;
 
@@ -30,57 +34,51 @@ public class DeleteStudents extends BaseServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-
-        try {
-            utilsDB = new StudentDbUtilImpl(dataSource);
-        } catch (Exception exc) {
-            throw new ServletException(exc);
+        if (dataSource == null) {
+            throw new ServletException("DataSource 'jdbc/studentApp' is not available. Check server configuration (context.xml) and database connectivity.");
         }
+        this.utilsDB = new StudentDbUtilImpl(dataSource);
+        logger.info("DeleteStudents servlet initialized successfully.");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Action action = actionOf(request, Action.LIST);
-        switch (action) {
-            case DELETE:
-                deleteStudents(request, response);
-                break;
-            case LIST:
-            default:
-                listStudents(request, response);
-        }
-    }
-
-    private void deleteStudents(HttpServletRequest request, HttpServletResponse response) {
-        String[] studentsId = request.getParameterValues(Web.Params.STUDENT_CHECKBOX);
-        if (studentsId == null) {
-            listStudents(request, response);
-            return;
-        }
-        try {
-            utilsDB.deleteStudents(studentsId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // GET request always displays the list of students.
         listStudents(request, response);
-    }
-
-    private void listStudents(HttpServletRequest request, HttpServletResponse response) {
-        List<Student> students = null;
-        try {
-            students = utilsDB.getStudents();
-            request.setAttribute(Web.Attrs.STUDENT_LIST, students);
-            forward(request, response, Web.Views.DELETE_STUDENTS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+        // POST request handles the deletion.
+        String[] studentsId = request.getParameterValues(Web.Params.STUDENT_CHECKBOX);
+        if (studentsId == null || studentsId.length == 0) {
+            // Use session for flash messages due to Post-Redirect-Get pattern.
+            request.getSession().setAttribute(Web.Attrs.FLASH_ERROR, "No students selected for deletion.");
+            redirect(request, response, "/admin/deletestudents");
+            return;
+        }
+        try {
+            utilsDB.deleteStudents(studentsId);
+            request.getSession().setAttribute(Web.Attrs.FLASH_SUCCESS, "Students deleted successfully.");
+        } catch (Exception e) {
+            logger.error("Error deleting students", e);
+            request.getSession().setAttribute(Web.Attrs.FLASH_ERROR, "Could not delete students due to a server error.");
+        }
+        // Redirect back to the list page to show the result and prevent form re-submission.
+        redirect(request, response, "/admin/deletestudents");
     }
 
+    private void listStudents(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            List<Student> students = utilsDB.getStudents();
+            request.setAttribute(Web.Attrs.STUDENT_LIST, students);
+            request.setAttribute("activeMenu", "delete");
+            forward(request, response, Web.Views.DELETE_STUDENTS);
+        } catch (Exception e) {
+            logger.error("Error listing students for deletion", e);
+            throw new ServletException("Could not display the student list.", e);
+        }
+    }
 }

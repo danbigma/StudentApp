@@ -27,4 +27,6 @@ public interface StudentDbUtilInterface {
 
 	List<Student> getRecentStudents(int limit) throws SQLException;
 
+	List<Student> getStudentsPaged(int offset, int limit) throws SQLException;
+
 }

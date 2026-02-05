@@ -29,9 +29,11 @@ public class Logout extends BaseServlet {
             HttpSession oldSession = request.getSession(false);
             if (oldSession != null) {
                 oldSession.invalidate();
-                log.info("Sesión cerrada por el usuario.");
+                log.info("User session invalidated successfully.");
             }
-            redirect(request, response, "/login.jsp");
+            // Redirigir con un parámetro para que el frontend pueda mostrar un mensaje de "sesión cerrada".
+            // El frontend (JSP o JS) puede leer este parámetro y mostrar un toast/alerta.
+            redirect(request, response, "/login?logout=success");
         } catch (Exception e) {
             log.error("Error al cerrar la sesión: " + e.getMessage(), e);
             redirect(request, response, "/error.jsp");

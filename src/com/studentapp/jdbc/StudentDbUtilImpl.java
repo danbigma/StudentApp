@@ -185,4 +185,25 @@ public class StudentDbUtilImpl implements StudentDbUtilInterface {
             return students;
         });
     }
+
+    @Override
+    public List<Student> getStudentsPaged(int offset, int limit) throws SQLException {
+        return db.query(conn -> {
+            List<Student> list = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement(querys.getStudentsPagedQuery())) {
+                ps.setInt(1, Math.max(1, limit));
+                ps.setInt(2, Math.max(0, offset));
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String firstName = rs.getString("first_name");
+                        String lastName = rs.getString("last_name");
+                        String email = rs.getString("email");
+                        list.add(new Student(id, firstName, lastName, email));
+                    }
+                }
+            }
+            return list;
+        });
+    }
 }

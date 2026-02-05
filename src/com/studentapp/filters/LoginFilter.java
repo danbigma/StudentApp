@@ -37,7 +37,7 @@ public class LoginFilter implements Filter {
 
 	private void redirectToLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    this.context.log("Unauthorized access request");
-	    response.sendRedirect(request.getContextPath() + "/login.jsp");
+	    response.sendRedirect(request.getContextPath() + "/login");
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

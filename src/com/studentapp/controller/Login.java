@@ -41,6 +41,13 @@ public class Login extends BaseServlet {
     }
 
 	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Muestra la página de login cuando se accede a /login vía GET
+		forward(request, response, Web.Views.LOGIN);
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -89,8 +96,8 @@ public class Login extends BaseServlet {
             }
         } catch (Exception e) {
             log.error("Login error", e);
+            request.setAttribute(Web.Attrs.FLASH_ERROR, "An unexpected error occurred during login.");
+            forward(request, response, Web.Views.LOGIN);
         }
-
 	}
-
 }
