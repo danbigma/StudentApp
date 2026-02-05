@@ -5,7 +5,6 @@ public final class Web {
 
     public static final class Attrs {
         public static final String STUDENT_LIST = "studentList";
-        public static final String THE_STUDENT = "THE_STUDENT";
         public static final String NUM = "num";
         public static final String INFO_LIST = "infoList";
         public static final String CSRF_TOKEN = "csrfToken";
@@ -39,7 +38,6 @@ public final class Web {
     }
 
     public static final class Views {
-        public static final String UPDATE_STUDENT_FORM = "/admin/update-student-form.jsp";
         public static final String DELETE_STUDENTS = "/admin/deleteStudents.jsp";
         public static final String LOGIN = "/login.jsp";
         public static final String CLIENT_INFORMATION = "/admin/clientinformation.jsp";

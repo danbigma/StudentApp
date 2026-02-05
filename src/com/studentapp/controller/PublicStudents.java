@@ -2,10 +2,9 @@ package com.studentapp.controller;
 
 import com.google.gson.Gson;
 import com.studentapp.entity.Student;
-import com.studentapp.jdbc.StudentDbUtilImpl;
-import com.studentapp.jdbc.StudentDbUtilInterface;
+import com.studentapp.student.bootstrap.StudentModule;
+import com.studentapp.student.service.StudentService;
 import com.studentapp.web.BaseServlet;
-import com.studentapp.web.Web;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -24,7 +23,7 @@ public class PublicStudents extends BaseServlet {
     @Resource(name = "jdbc/studentApp")
     private DataSource dataSource;
 
-    private StudentDbUtilInterface db;
+    private StudentService studentService;
 
     @Override
     public void init() throws ServletException {
@@ -32,7 +31,7 @@ public class PublicStudents extends BaseServlet {
         if (dataSource == null) {
             throw new ServletException("DataSource 'jdbc/studentApp' is not available. Check server configuration (context.xml) and database connectivity.");
         }
-        this.db = new StudentDbUtilImpl(dataSource);
+        this.studentService = StudentModule.buildStudentService(dataSource);
     }
 
     @Override
@@ -41,25 +40,21 @@ public class PublicStudents extends BaseServlet {
         int offset = intParam(req, "offset", 0);
         boolean wantsJson = "XMLHttpRequest".equalsIgnoreCase(req.getHeader("X-Requested-With"))
                 || "json".equalsIgnoreCase(req.getParameter("format"));
-        try {
-            List<Student> page = db.getStudentsPaged(offset, limit);
-            if (wantsJson) {
-                // Usar una librería como Gson es mucho más seguro y limpio que construir JSON manualmente.
-                // Maneja correctamente el escapado de todos los caracteres especiales.
-                resp.setContentType("application/json;charset=UTF-8");
 
+        try {
+            List<Student> page = studentService.getStudentsPaged(offset, limit);
+            if (wantsJson) {
+                resp.setContentType("application/json;charset=UTF-8");
                 Map<String, Object> data = new HashMap<>();
                 data.put("items", page);
                 data.put("nextOffset", offset + page.size());
-
-                // Gson serializará automáticamente el mapa y la lista de objetos Student a JSON.
                 new Gson().toJson(data, resp.getWriter());
                 return;
-            } else {
-                req.setAttribute("students", page);
-                req.setAttribute("nextOffset", offset + page.size());
-                forward(req, resp, "/public/students.jsp");
             }
+
+            req.setAttribute("students", page);
+            req.setAttribute("nextOffset", offset + page.size());
+            forward(req, resp, "/public/students.jsp");
         } catch (Exception e) {
             throw new ServletException(e);
         }

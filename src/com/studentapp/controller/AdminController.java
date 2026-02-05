@@ -1,9 +1,13 @@
 package com.studentapp.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.List;
+import com.studentapp.entity.Student;
+import com.studentapp.enums.Action;
+import com.studentapp.student.bootstrap.StudentModule;
+import com.studentapp.student.service.StudentService;
+import com.studentapp.student.service.StudentValidationException;
+import com.studentapp.web.BaseServlet;
+import com.studentapp.web.Web;
+import org.apache.log4j.Logger;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -11,27 +15,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
-import org.apache.log4j.Logger;
-
-import com.studentapp.entity.Student;
-import com.studentapp.enums.Action;
-import com.studentapp.jdbc.StudentDbUtilImpl;
-import com.studentapp.jdbc.StudentDbUtilInterface;
-import com.studentapp.web.BaseServlet;
-import com.studentapp.web.Web;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 @WebServlet("/admin")
 public class AdminController extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
-    static Logger logger = Logger.getLogger(AdminController.class);
-
-    private StudentDbUtilInterface studentDbUtil;
+    private static final Logger logger = Logger.getLogger(AdminController.class);
 
     @Resource(name = "jdbc/studentApp")
     private DataSource dataSource;
+
+    private StudentService studentService;
 
     @Override
     public void init() throws ServletException {
@@ -39,12 +37,12 @@ public class AdminController extends BaseServlet {
         if (dataSource == null) {
             throw new ServletException("DataSource 'jdbc/studentApp' is not available. Check server configuration (context.xml) and database connectivity.");
         }
-        this.studentDbUtil = new StudentDbUtilImpl(dataSource);
+        this.studentService = StudentModule.buildStudentService(dataSource);
         logger.info("AdminController initialized successfully.");
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Action action = actionOf(request, Action.DASHBOARD);
             commands(request, response, action);
@@ -58,18 +56,6 @@ public class AdminController extends BaseServlet {
         doGet(req, resp);
     }
 
-    @SuppressWarnings("unused")
-    private void databasecounter(HttpServletRequest request) {
-        try {
-            BigDecimal counter = studentDbUtil.getNumAllRegistr();
-            request.setAttribute(Web.Attrs.NUM, counter);
-        } catch (Exception e) {
-            // Catching generic Exception is better here to avoid unhandled NullPointerException
-            // if studentDbUtil is not initialized.
-            logger.error("Error getting student count from database", e);
-        }
-    }
-
     private void commands(HttpServletRequest request, HttpServletResponse response, Action action) throws Exception {
         switch (action) {
             case DASHBOARD:
@@ -77,9 +63,6 @@ public class AdminController extends BaseServlet {
                 return;
             case ADD:
                 addStudent(request, response);
-                return;
-            case LOAD:
-                loadStudent(request, response);
                 return;
             case UPDATE:
                 updateStudent(request, response);
@@ -94,30 +77,36 @@ public class AdminController extends BaseServlet {
     }
 
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // read student id from form data
-        String theStudentId = request.getParameter(Web.Params.STUDENT_ID);
+        String studentId = request.getParameter(Web.Params.STUDENT_ID);
         boolean wantsJson = "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))
                 || (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json"));
+
         try {
-            studentDbUtil.deleteStudent(theStudentId);
+            studentService.deleteStudent(studentId);
             if (wantsJson) {
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().write("{\"ok\":true}");
                 return;
-            } else {
-                request.setAttribute(Web.Attrs.FLASH_SUCCESS, "Student deleted");
             }
+            request.setAttribute(Web.Attrs.FLASH_SUCCESS, "Student deleted");
+        } catch (StudentValidationException e) {
+            if (wantsJson) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"ok\":false,\"error\":\"" + e.getMessage() + "\"}");
+                return;
+            }
+            request.setAttribute(Web.Attrs.FLASH_ERROR, e.getMessage());
         } catch (Exception e) {
+            logger.error("Error deleting student", e);
             if (wantsJson) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().write("{\"ok\":false,\"error\":\"Delete failed\"}");
                 return;
-            } else {
-                request.setAttribute(Web.Attrs.FLASH_ERROR, "Error deleting student");
             }
+            request.setAttribute(Web.Attrs.FLASH_ERROR, "Error deleting student");
         }
-        // return to dashboard
         showDashboard(request, response);
     }
 
@@ -126,40 +115,22 @@ public class AdminController extends BaseServlet {
             showDashboard(request, response);
             return;
         }
-        // read student info from form data
+
         int id = intParam(request, Web.Params.STUDENT_ID, -1);
         String firstName = request.getParameter(Web.Params.FIRST_NAME);
         String lastName = request.getParameter(Web.Params.LAST_NAME);
         String email = request.getParameter(Web.Params.EMAIL);
-        // create a new student object
-        Student theStudent = new Student(id, firstName, lastName, email);
-        // basic validation: require all fields
-        if (theStudent.getFirstName().isEmpty() || theStudent.getLastName().isEmpty() || theStudent.getEmail().isEmpty()) {
-            request.setAttribute(Web.Attrs.FLASH_ERROR, "All fields are required");
-            showDashboard(request, response);
-            return;
-        }
-        // perform update on database
+
         try {
-            studentDbUtil.updateStudent(theStudent);
+            studentService.updateStudent(id, firstName, lastName, email);
             request.setAttribute(Web.Attrs.FLASH_SUCCESS, "Student updated");
+        } catch (StudentValidationException e) {
+            request.setAttribute(Web.Attrs.FLASH_ERROR, e.getMessage());
         } catch (Exception e) {
+            logger.error("Error updating student", e);
             request.setAttribute(Web.Attrs.FLASH_ERROR, "Error updating student");
         }
-        // return to dashboard
         showDashboard(request, response);
-
-    }
-
-    private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // read student id from form data
-        String theStudentId = request.getParameter(Web.Params.STUDENT_ID);
-        // get student from database (db util)
-        Student theStudent = studentDbUtil.getStudent(theStudentId);
-        // place student in the request attribute
-        request.setAttribute(Web.Attrs.THE_STUDENT, theStudent);
-        // send to jsp page: update-student-form.jsp
-        forward(request, response, Web.Views.UPDATE_STUDENT_FORM);
     }
 
     private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -167,33 +138,35 @@ public class AdminController extends BaseServlet {
             showDashboard(request, response);
             return;
         }
-        // read student info from form data
+
         String firstName = request.getParameter(Web.Params.FIRST_NAME);
         String lastName = request.getParameter(Web.Params.LAST_NAME);
         String email = request.getParameter(Web.Params.EMAIL);
-        // create a new student object
-        Student theStudent = new Student(firstName, lastName, email);
-        // basic validation: require all fields
-        if (!theStudent.getFirstName().isEmpty() && !theStudent.getLastName().isEmpty() && !theStudent.getEmail().isEmpty()) {
-            try {
-                studentDbUtil.addStudent(theStudent);
-                request.setAttribute(Web.Attrs.FLASH_SUCCESS, "Student added");
-            } catch (Exception e) {
-                request.setAttribute(Web.Attrs.FLASH_ERROR, "Error adding student");
-            }
-        } else {
-            request.setAttribute(Web.Attrs.FLASH_ERROR, "All fields are required");
+
+        try {
+            studentService.addStudent(firstName, lastName, email);
+            request.setAttribute(Web.Attrs.FLASH_SUCCESS, "Student added");
+        } catch (StudentValidationException e) {
+            request.setAttribute(Web.Attrs.FLASH_ERROR, e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error adding student", e);
+            request.setAttribute(Web.Attrs.FLASH_ERROR, "Error adding student");
         }
-        // return to dashboard
         showDashboard(request, response);
     }
 
     private void showDashboard(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        databasecounter(request);
-        List<Student> students = studentDbUtil.getStudents();
+        try {
+            BigDecimal counter = studentService.countStudents();
+            request.setAttribute(Web.Attrs.NUM, counter);
+        } catch (Exception e) {
+            logger.error("Error counting students", e);
+            request.setAttribute(Web.Attrs.NUM, BigDecimal.ZERO);
+        }
+
+        List<Student> students = studentService.getAllStudents();
         request.setAttribute(Web.Attrs.STUDENT_LIST, students);
         request.setAttribute("activeMenu", "dashboard");
         forward(request, response, Web.Views.DASHBOARD);
     }
-
 }
