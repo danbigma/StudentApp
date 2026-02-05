@@ -10,56 +10,63 @@
   <meta name="csrf-token" content="${csrfToken}" />
   <meta name="app-context" content="${context}" />
   <meta name="current-route" content="${activeMenu}" />
+  <meta name="color-scheme" content="light dark" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="${context}/css/ui.css" />
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
-  <div class="container-fluid">
+<div class="app">
+  <header class="topbar">
     <c:choose>
       <c:when test="${empty sessionScope.username}">
-        <a class="navbar-brand" href="${context}/students">StudentApp</a>
+        <a class="brand" href="${context}/students">
+          <span class="brand-dot"></span>
+          <span>StudentApp</span>
+        </a>
       </c:when>
       <c:otherwise>
-        <a class="navbar-brand" href="${context}/admin?action=dashboard">StudentApp</a>
+        <a class="brand" href="${context}/admin?action=dashboard">
+          <span class="brand-dot"></span>
+          <span>StudentApp</span>
+        </a>
       </c:otherwise>
     </c:choose>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <c:if test="${not empty sessionScope.username}">
-          <li class="nav-item"><a class="nav-link ${activeMenu == 'dashboard' ? 'active' : ''}" href="${context}/admin?action=dashboard">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link ${activeMenu == 'delete' ? 'active' : ''}" href="${context}/admin/deletestudents">Delete Students</a></li>
-          <li class="nav-item"><a class="nav-link ${activeMenu == 'clientinfo' ? 'active' : ''}" href="${context}/admin/clientInformation">Client Info</a></li>
-        </c:if>
-      </ul>
-
-      <div class="d-flex align-items-center gap-2">
-        <span class="badge text-bg-secondary js-health">--</span>
-        <span class="badge text-bg-secondary js-db">--</span>
-        <c:if test="${empty sessionScope.username}">
-          <a class="btn btn-sm btn-outline-primary" href="${context}/login">Login</a>
-        </c:if>
-        <c:if test="${not empty sessionScope.username}">
-          <form action="${context}/logout" method="post" class="m-0">
-            <input type="hidden" name="_csrf" value="${csrfToken}" />
-            <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
-          </form>
-        </c:if>
-      </div>
+    <div class="topbar-actions">
+      <span class="badge js-health">--</span>
+      <span class="badge js-db">--</span>
+      <button type="button" class="btn btn-outline btn-sm" data-theme-toggle>Dark</button>
+      <c:if test="${empty sessionScope.username}">
+        <a class="btn btn-primary btn-sm" href="${context}/login">Login</a>
+      </c:if>
+      <c:if test="${not empty sessionScope.username}">
+        <form action="${context}/logout" method="post">
+          <input type="hidden" name="_csrf" value="${csrfToken}" />
+          <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+        </form>
+      </c:if>
     </div>
-  </div>
-</nav>
+  </header>
 
-<div aria-live="polite" aria-atomic="true" style="position: fixed; top: 70px; right: 16px; z-index: 1080;">
-  <div id="toastContainer"></div>
-  <div id="flashData" data-success="${flashSuccess}" data-error="${flashError}" hidden></div>
-</div>
+  <div class="app-body">
+    <c:if test="${not empty sessionScope.username}">
+      <aside class="sidebar">
+        <h4>Admin</h4>
+        <a class="js-nav-route" data-route="dashboard" href="${context}/admin?action=dashboard">Dashboard</a>
+        <a class="js-nav-route" data-route="delete" href="${context}/admin/deletestudents">Delete Students</a>
+        <a class="js-nav-route" data-route="clientinfo" href="${context}/admin/clientInformation">Client Info</a>
+        <h4>Actions</h4>
+        <form action="${context}/admin/seed" method="post">
+          <input type="hidden" name="_csrf" value="${csrfToken}" />
+          <input type="hidden" name="count" value="100" />
+          <button type="submit" class="btn btn-outline btn-sm" data-confirm="Seed 100 demo students?">Seed Demo</button>
+        </form>
+      </aside>
+    </c:if>
+
+    <main class="content">
+      <div id="toastContainer" class="toast-container"></div>
+      <div id="flashData" data-success="${flashSuccess}" data-error="${flashError}" hidden></div>

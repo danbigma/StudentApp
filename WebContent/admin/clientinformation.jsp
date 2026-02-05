@@ -4,50 +4,56 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <jsp:include page="../header.jsp" />
 
-<div class="container py-4">
+<div class="page">
   <c:if test="${empty infoList}">
-    <div class="alert alert-danger" role="alert">Ha ocurrido un error al obtener la información del cliente.</div>
+    <div class="card">
+      <div class="card-body">
+        <strong>Request failed.</strong>
+        <div class="muted">Could not fetch client information.</div>
+      </div>
+    </div>
   </c:if>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">Client Information</h3>
+  <div class="page-header">
     <div>
-      <small class="text-muted me-2">Request ID:</small>
+      <h1 class="page-title">Client Information</h1>
+      <p class="page-subtitle">Request diagnostics and environment snapshot</p>
+    </div>
+    <div class="toolbar">
+      <span class="muted">Request ID</span>
       <code id="requestIdVal">${infoList['requestId']}</code>
-      <button id="copyRequestIdBtn" class="btn btn-sm btn-outline-primary ms-2" type="button">Copy</button>
+      <button id="copyRequestIdBtn" class="btn btn-outline btn-sm" type="button">Copy</button>
     </div>
   </div>
 
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">Request</div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <tr><td>receivedAt</td><td>${infoList['receivedAt']}</td></tr>
-              <tr><td>method</td><td>${infoList['method']}</td></tr>
-              <tr><td>requestURL</td><td><code>${infoList['requestURL']}</code></td></tr>
-              <tr><td>requestURI</td><td>${infoList['requestURI']}</td></tr>
-              <tr><td>contextPath</td><td>${infoList['contextPath']}</td></tr>
-              <tr><td>servletPath</td><td>${infoList['servletPath']}</td></tr>
-              <tr><td>queryString</td><td><code>${infoList['queryString']}</code></td></tr>
-              <tr><td>referer</td><td>${infoList['referer']}</td></tr>
-              <tr><td>contentType</td><td>${infoList['contentType']}</td></tr>
-              <tr><td>contentLength</td><td>${infoList['contentLength']}</td></tr>
-              <tr><td>characterEncoding</td><td>${infoList['characterEncoding']}</td></tr>
-              <tr><td>processingTimeMs</td><td>${infoList['processingTimeMs']}</td></tr>
-            </tbody>
-          </table>
-        </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Request</h3></div>
+      <div class="card-body">
+        <table class="table">
+          <tbody>
+            <tr><td>receivedAt</td><td>${infoList['receivedAt']}</td></tr>
+            <tr><td>method</td><td>${infoList['method']}</td></tr>
+            <tr><td>requestURL</td><td><code>${infoList['requestURL']}</code></td></tr>
+            <tr><td>requestURI</td><td>${infoList['requestURI']}</td></tr>
+            <tr><td>contextPath</td><td>${infoList['contextPath']}</td></tr>
+            <tr><td>servletPath</td><td>${infoList['servletPath']}</td></tr>
+            <tr><td>queryString</td><td><code>${infoList['queryString']}</code></td></tr>
+            <tr><td>referer</td><td>${infoList['referer']}</td></tr>
+            <tr><td>contentType</td><td>${infoList['contentType']}</td></tr>
+            <tr><td>contentLength</td><td>${infoList['contentLength']}</td></tr>
+            <tr><td>characterEncoding</td><td>${infoList['characterEncoding']}</td></tr>
+            <tr><td>processingTimeMs</td><td>${infoList['processingTimeMs']}</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card mb-3">
-        <div class="card-header">Client</div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
+    <div class="stack">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Client</h3></div>
+        <div class="card-body">
+          <table class="table">
             <tbody>
               <tr><td>remoteAddr</td><td>${infoList['remoteAddr']}</td></tr>
               <tr><td>remoteHost</td><td>${infoList['remoteHost']}</td></tr>
@@ -61,9 +67,9 @@
       </div>
 
       <div class="card">
-        <div class="card-header">Server</div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
+        <div class="card-header"><h3 class="card-title">Server</h3></div>
+        <div class="card-body">
+          <table class="table">
             <tbody>
               <tr><td>serverName</td><td>${infoList['serverName']}</td></tr>
               <tr><td>serverPort</td><td>${infoList['serverPort']}</td></tr>
@@ -78,38 +84,34 @@
     </div>
   </div>
 
-  <div class="row g-3 mt-1">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">Session / Cookies</div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'session:') || fn:startsWith(e.key, 'cookie:')}">
-                  <tr><td>${e.key}</td><td>${e.value}</td></tr>
-                </c:if>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Session / Cookies</h3></div>
+      <div class="card-body">
+        <table class="table">
+          <tbody>
+            <c:forEach var="e" items="${infoList}">
+              <c:if test="${fn:startsWith(e.key, 'session:') || fn:startsWith(e.key, 'cookie:')}">
+                <tr><td>${e.key}</td><td>${e.value}</td></tr>
+              </c:if>
+            </c:forEach>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">Headers / Params</div>
-        <div class="table-responsive">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <c:forEach var="e" items="${infoList}">
-                <c:if test="${fn:startsWith(e.key, 'header:') || fn:startsWith(e.key, 'param:')}">
-                  <tr><td>${e.key}</td><td><code>${e.value}</code></td></tr>
-                </c:if>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Headers / Params</h3></div>
+      <div class="card-body">
+        <table class="table">
+          <tbody>
+            <c:forEach var="e" items="${infoList}">
+              <c:if test="${fn:startsWith(e.key, 'header:') || fn:startsWith(e.key, 'param:')}">
+                <tr><td>${e.key}</td><td><code>${e.value}</code></td></tr>
+              </c:if>
+            </c:forEach>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

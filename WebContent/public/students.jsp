@@ -2,30 +2,30 @@
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <jsp:include page="../header.jsp" />
 
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">Students</h3>
-    <span class="text-muted">Public listing</span>
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Students</h1>
+      <p class="page-subtitle">Public directory</p>
+    </div>
   </div>
 
-  <div id="cardsGrid" class="row g-3">
+  <div class="grid grid-4" id="cardsGrid">
     <c:forEach var="s" items="${students}">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title mb-1">${s.firstName} ${s.lastName}</h5>
-            <p class="text-muted small mb-3">${s.email}</p>
-            <span class="badge text-bg-secondary">ID ${s.id}</span>
-          </div>
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">${s.firstName} ${s.lastName}</h3>
+          <p class="muted">${s.email}</p>
+          <span class="badge">ID ${s.id}</span>
         </div>
       </div>
     </c:forEach>
   </div>
 
-  <div class="text-center mt-4">
+  <div class="text-center">
     <button id="loadMore" class="btn btn-primary">
-      <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-      Load more
+      <span class="spinner" style="display:none;" aria-hidden="true"></span>
+      <span>Load more</span>
     </button>
   </div>
 </div>
@@ -38,7 +38,7 @@
 
   let next = parseInt('${nextOffset}', 10) || 0;
   const limit = 12;
-  const spinner = btn.querySelector('.spinner-border');
+  const spinner = btn.querySelector('.spinner');
 
   const escapeHtml = (t) => {
     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -46,19 +46,17 @@
   };
 
   const createCardHtml = (s) => `
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title mb-1">${escapeHtml(s.firstName + ' ' + s.lastName)}</h5>
-          <p class="text-muted small mb-3">${escapeHtml(s.email)}</p>
-          <span class="badge text-bg-secondary">ID ${s.id}</span>
-        </div>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">${escapeHtml(s.firstName + ' ' + s.lastName)}</h3>
+        <p class="muted">${escapeHtml(s.email)}</p>
+        <span class="badge">ID ${s.id}</span>
       </div>
     </div>`;
 
   const loadMoreStudents = async () => {
     btn.disabled = true;
-    spinner?.classList.remove('d-none');
+    spinner.style.display = 'inline-block';
 
     try {
       const response = await fetch(`${context}/students?format=json&offset=${next}&limit=${limit}`, { credentials: 'same-origin' });
@@ -77,7 +75,7 @@
       console.error('Failed to load more students:', error);
       btn.textContent = 'Load failed';
     } finally {
-      spinner?.classList.add('d-none');
+      spinner.style.display = 'none';
     }
   };
 
